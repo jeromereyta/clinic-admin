@@ -47,11 +47,7 @@
             :done="step > 1"
           >
           <q-card-section>
-            <q-form
-              @submit="onSubmit"
-              @reset="onReset"
-              class="q-gutter-md"
-            >
+            <q-form class="q-gutter-md">
               <q-input
                 filled
                 v-model="user_details.name"
@@ -113,11 +109,7 @@
             :done="step > 2"
           >
             <q-card-section>
-              <q-form
-                @submit="onSubmit"
-                @reset="onReset"
-                class="q-gutter-md"
-              >
+              <q-form class="q-gutter-md">
                 <q-input
                   filled
                   v-model="user_details.street_address"
@@ -158,11 +150,7 @@
             :done="step > 3"
           >
             <q-card-section>
-              <q-form
-                @submit="onSubmit"
-                @reset="onReset"
-                class="q-gutter-md"
-              >
+              <q-form class="q-gutter-md">
                 <q-input
                   filled
                   v-model="user_details.attending_doctor"
@@ -224,7 +212,7 @@ export default {
     return {
       data: [],
       user_details: {
-        birthdate: '1990/01/01'
+        birth_date: '1990/01/01'
       },
       patientView: false,
       createPatientLoading: false,
