@@ -9,9 +9,9 @@
     <q-card-section class="q-pa-none">
       <q-table
         title=""
-        :data="data"
+        :data="patientsComputed"
         :columns="columns"
-        row-key="name"
+        row-key="id"
         :filter="filter"
       >
         <template v-slot:top-right>
@@ -20,19 +20,18 @@
               <q-icon name="search"/>
             </template>
           </q-input>
-
           <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-            <q-btn icon="edit" size="sm" flat dense @click="patientView"/>
+            <q-btn icon="edit" size="sm" flat dense @click="openPatientView(props.row)"/>
             <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense/>
           </q-td>
         </template>
       </q-table>
       <q-linear-progress query size="10px"  color="blue" v-if="isLoading"/>
     </q-card-section>
-    <q-dialog v-model="patientView">
+    <q-dialog v-model="patientView" persistent>
       <q-card style="width: 1000px; max-width: 100vw; height: 800px; max-height: 100vw;">
         <q-stepper
           v-model="step"
@@ -46,6 +45,22 @@
             icon="settings"
             :done="step > 1"
           >
+            <div class="q-gutter-md row items-start">
+              <q-img
+                style="max-height: 50%; width: 50%; height: 50%"
+                :src="user_details.profile"/>
+              <q-file
+                v-model="profilePicture"
+                label="Upload Patient Image"
+                filled
+                counter
+                max-files="3"
+                multiple
+                style="max-width: 300px"
+              >
+              </q-file>
+              <q-btn v-if="profilePicture !== null" v-close-popup label="Upload" color="primary" flat @click="uploadImage" />
+            </div>
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input
@@ -95,6 +110,13 @@
                 filled
                 v-model="user_details.phone_number"
                 label="Phone Number *"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']"
+              />
+              <q-input
+                filled
+                v-model="user_details.mobile_number"
+                label="Mobile Number *"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
@@ -192,6 +214,7 @@
           <template v-slot:navigation>
             <q-stepper-navigation>
               <q-btn @click="proceed()" color="primary" :label="step === 3 ? 'Finish' : 'Continue'" />
+              <q-btn @click="cancel()" color="secondary" :label="'Cancel'" class="q-ml-sm"/>
               <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
             </q-stepper-navigation>
           </template>
@@ -202,19 +225,39 @@
 
       </q-card>
     </q-dialog>
+    <q-dialog v-model="patientError" transition-show="scale">
+      <q-card class="bg-red-4 text-white" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Error</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <ul>
+            <li v-for="message in errorMessages" :key="message">
+              {{ message }}
+            </li>
+          </ul>
+        </q-card-section>
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-card>
 </template>
 
 <script>
 export default {
-  name: "TableBasic",
+  name: "TablePatients",
   data() {
     return {
       data: [],
       user_details: {
         birth_date: '1990/01/01'
       },
+      profilePicture : null,
       patientView: false,
+      patientError: false,
       createPatientLoading: false,
       isLoading: false,
       filter: '',
@@ -237,32 +280,54 @@ export default {
         {name: 'age', label: 'Age', field: 'age', align: 'left'},
         {name: 'created_at', label: 'Date Created', field: 'created_at', align: 'left'},
         {name: 'Action', label: '', field: 'Action', sortable: false, align: 'center'}
-      ]
+      ],
+      errorMessages : []
     }
   },
   created() {
-    this.getPatients();
+      this.getPatients();
+  },
+  computed: {
+    patientsComputed: function() {
+      return this.$store.state.patients.patients
+    }
   },
   methods: {
+    cancel () {
+      this.user_details = {};
+      this.step = 1;
+      this.patientView = false;
+    },
     proceed () {
         if (this.step !== 3) {
           this.$refs.stepper.next()
         } else {
           this.createPatientLoading = true
+          this.errorMessages = [];
           this.$store.dispatch("patients/add", this.user_details).then(
             response => {
               this.createPatientLoading = false;
 
               if (response.status === 401) {
                 this.$router.push("/UsersAdmin");
-              } else {
-                this.user_details = {};
+              } else if (response.status > 200) {
+                this.processError(response.data)
                 this.step = 1;
-                this.patientView = false;
-                this.getPatients();
+              } else {
+                this.cancel()
               }
             })
         }
+    },
+    processError (errors) {
+      for (let key in errors) {
+        let errorObject = errors[key]
+
+        for (let index in errorObject) {
+          this.errorMessages.push(errorObject[index]);
+        }
+      }
+      this.patientError = true;
     },
     getPatients () {
       this.isLoading = true;
@@ -276,6 +341,12 @@ export default {
             this.data = response.data;
           }
         })
+    },
+    openPatientView (patient) {
+      this.$router.push({ name: 'patient', params: { patient_code: patient.id } })
+    },
+    uploadImage () {
+
     }
   }
 }

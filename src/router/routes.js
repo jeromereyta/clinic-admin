@@ -4,6 +4,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Dashboard.vue')},
+      {path: '/Queue', component: () => import('pages/QueuePage.vue')},
       {path: '/Dashboard2', component: () => import('pages/Dashboard2.vue')},
       {path: '/Profile', component: () => import('pages/UserProfile.vue')},
       {path: '/Map', component: () => import('pages/Map.vue')},
@@ -19,7 +20,18 @@ const routes = [
       {path: '/Pagination', component: () => import('pages/Pagination.vue')},
       {path: '/Taskboard', component: () => import('pages/TaskBoard.vue')},
       {path: '/Ecommerce', component: () => import('pages/ProductCatalogues.vue')},
-      {path: '/Patients',component: () => import('pages/Patients.vue')},
+      {
+        path: '/Patients',
+        component: () => import('pages/Patients/Patients.vue'),
+        name: 'patients',
+      },
+      {
+        path: '/Patient/:patient_code',
+        component: () => import('pages/Patients/Patient.vue'),
+        name: 'patient',
+      },
+      {path: '/CategoryProcedures',component: () => import('pages/Settings/CategoryProcedures.vue')},
+      {path: '/Procedures',component: () => import('pages/Settings/Procedures.vue')},
     ]
   },
   {

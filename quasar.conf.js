@@ -50,7 +50,13 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: ['AppFullscreen']
+      plugins: [
+        'AppFullscreen',
+        'Notify'
+      ],
+      config: {
+        notify: { /* look at QuasarConfOptions from the API card */ }
+      }
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie

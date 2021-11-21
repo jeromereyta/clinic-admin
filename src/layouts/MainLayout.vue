@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar style="background-color: gray">
         <q-btn
           flat
           dense
@@ -11,7 +11,7 @@
           aria-label="Menu"
         />
         <q-toolbar-title>
-          Klinika Manila
+          <p style="color:deeppink; padding-top: 10px">Clinica Medica</p>
         </q-toolbar-title>
         <q-space/>
         <div class="q-gutter-sm row items-center no-wrap">
@@ -19,30 +19,6 @@
                  @click="$q.fullscreen.toggle()"
                  v-if="$q.screen.gt.sm">
           </q-btn>
-<!--          <q-btn round dense flat color="white" icon="fab fa-github" type="a" href="https://github.com/pratik227/quasar-admin" target="_blank">-->
-<!--          </q-btn>-->
-<!--          <q-btn round dense flat icon="fas fa-heart" style="color:#9d4182 !important;" type="a" href="https://github.com/sponsors/pratik227" target="_blank">-->
-<!--          </q-btn>-->
-<!--          <q-btn round dense flat color="white" icon="notifications">-->
-<!--            <q-badge color="red" text-color="white" floating>-->
-<!--              5-->
-<!--            </q-badge>-->
-<!--            <q-menu-->
-<!--            >-->
-<!--              <q-list style="min-width: 100px">-->
-<!--                <messages></messages>-->
-<!--                <q-card class="text-center no-shadow no-border">-->
-<!--                  <q-btn label="View All" style="max-width: 120px !important;" flat dense-->
-<!--                         class="text-indigo-8"></q-btn>-->
-<!--                </q-card>-->
-<!--              </q-list>-->
-<!--            </q-menu>-->
-<!--          </q-btn>-->
-<!--          <q-btn round flat>-->
-<!--            <q-avatar size="26px">-->
-<!--              <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
-<!--            </q-avatar>-->
-<!--          </q-btn>-->
         </div>
       </q-toolbar>
     </q-header>
@@ -62,14 +38,30 @@
             <q-item-label>Dashboard</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+        <q-item to="/Queue" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="dashboard"/>
+            <q-icon name="queue_play_next"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Sales Dashboard</q-item-label>
+            <q-item-label>Procedure Queueing</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item to="/Patients" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="people_alt"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Patients</q-item-label>
+          </q-item-section>
+        </q-item>
+<!--        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="dashboard"/>-->
+<!--          </q-item-section>-->
+<!--          <q-item-section>-->
+<!--            <q-item-label>Sales Dashboard</q-item-label>-->
+<!--          </q-item-section>-->
+<!--        </q-item>-->
         <q-expansion-item
           icon="pages"
           label="Account"
@@ -107,6 +99,45 @@
 <!--                <q-item-label>Maintenance</q-item-label>-->
 <!--              </q-item-section>-->
 <!--            </q-item>-->
+          </q-list>
+        </q-expansion-item>
+        <q-expansion-item
+          icon="settings"
+          label="Settings"
+        >
+          <q-list class="q-pl-lg">
+              <q-item to="/CategoryProcedures" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar>
+                <q-icon name="view_headline"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Categories of Procedure</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item to="/Procedures" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar>
+                <q-icon name="integration_instructions"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Procedures</q-item-label>
+              </q-item-section>
+            </q-item>
+            <!--            <q-item to="/Profile" active-class="q-item-no-link-highlighting">-->
+            <!--              <q-item-section avatar>-->
+            <!--                <q-icon name="person"/>-->
+            <!--              </q-item-section>-->
+            <!--              <q-item-section>-->
+            <!--                <q-item-label>User Profile</q-item-label>-->
+            <!--              </q-item-section>-->
+            <!--            </q-item>-->
+            <!--            <q-item to="/Maintenance" active-class="q-item-no-link-highlighting">-->
+            <!--              <q-item-section avatar>-->
+            <!--                <q-icon name="settings"/>-->
+            <!--              </q-item-section>-->
+            <!--              <q-item-section>-->
+            <!--                <q-item-label>Maintenance</q-item-label>-->
+            <!--              </q-item-section>-->
+            <!--            </q-item>-->
           </q-list>
         </q-expansion-item>
 <!--        <q-expansion-item-->
@@ -181,38 +212,31 @@
 <!--            <q-item-label>Tables</q-item-label>-->
 <!--          </q-item-section>-->
 <!--        </q-item>-->
-        <q-item to="/Patients" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="people_alt"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Patients</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Checkout" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="check_circle_outline"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Checkout</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Calendar" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="date_range"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Calendar</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item to="/Taskboard" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="done"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Taskboard</q-item-label>
-          </q-item-section>
-        </q-item>
+
+<!--        <q-item to="/Checkout" active-class="q-item-no-link-highlighting">-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="check_circle_outline"/>-->
+<!--          </q-item-section>-->
+<!--          <q-item-section>-->
+<!--            <q-item-label>Checkout</q-item-label>-->
+<!--          </q-item-section>-->
+<!--        </q-item>-->
+<!--        <q-item to="/Calendar" active-class="q-item-no-link-highlighting">-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="date_range"/>-->
+<!--          </q-item-section>-->
+<!--          <q-item-section>-->
+<!--            <q-item-label>Calendar</q-item-label>-->
+<!--          </q-item-section>-->
+<!--        </q-item>-->
+<!--        <q-item to="/Taskboard" active-class="q-item-no-link-highlighting">-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="done"/>-->
+<!--          </q-item-section>-->
+<!--          <q-item-section>-->
+<!--            <q-item-label>Taskboard</q-item-label>-->
+<!--          </q-item-section>-->
+<!--        </q-item>-->
 <!--        <q-item to="/Pagination" active-class="q-item-no-link-highlighting">-->
 <!--          <q-item-section avatar>-->
 <!--            <q-icon name="date_range"/>-->

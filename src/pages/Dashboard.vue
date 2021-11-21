@@ -1,19 +1,20 @@
 <template>
   <q-page class="q-pa-sm">
 
-    <card-social icon_position="left" />
 
     <card-charts />
 
+
+    <table-patient-visits/>
+
     <div class="row q-col-gutter-sm  q-py-sm">
-      <tab-social />
+      <!--      <tab-social />-->
       <card-with-image />
+      <card-with-image2/>
     </div>
 
-    <div class="row q-col-gutter-sm  q-pb-sm">
-      <todo-list />
 
-      <card-time-line />
+    <div class="row q-col-gutter-sm  q-pb-sm">
     </div>
   </q-page>
 </template>
@@ -25,7 +26,9 @@
         CardSocial: () =>  import('components/cards/CardSocial'),
         CardCharts: () =>  import('components/cards/CardCharts'),
         TabSocial: () =>  import('components/tabs/TabSocial'),
+        TablePatientVisits: () =>  import('components/tables/TablePatientVisits'),
         CardWithImage: () =>  import('components/cards/CardWithImage'),
+        CardWithImage2: () =>  import('components/cards/CardWithImage2'),
         CardTimeLine: () =>  import('components/cards/CardTimeLine'),
         TodoList: () =>  import('components/list/TodoList'),
         TableVisits: () =>  import('components/tables/TableVisits'),

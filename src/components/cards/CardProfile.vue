@@ -1,32 +1,39 @@
 <template>
-  <q-card>
-    <q-card-section class="text-center">
-      <q-avatar size="100px" class="shadow-10">
-        <img :src="avatar">
-      </q-avatar>
-    </q-card-section>
+  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    <q-card class="my-card">
+      <div style="width: 60%; height: 50%">
+        <q-img
+          style="padding-top: 15px"
+          src="https://i.pinimg.com/originals/64/dc/12/64dc12b3dea9667d618cf26306aa097f.gif"
+          :height="'50'"
+        />
 
-    <q-card-section class="q-pt-none text-center ">
-      <div class="text-h6  text-grey-8">
-        {{ name }}
-      </div>
-      <div class="text-caption text-grey-8">
-        {{ des }}
-      </div>
-    </q-card-section>
+        <q-card-section>
+          <div class="text-h6">Currently in Progress</div>
+          <div class="text-subtitle2">{{patient_name}}</div>
+          <div class="text-subtitle2">{{patient_code}}</div>
+        </q-card-section>
 
-    <q-card-actions align="center">
-      <q-btn flat round icon="fab fa-facebook" class="bg-indigo-7 text-white"/>
-      <q-btn flat round icon="fab fa-twitter" class="bg-info text-white"/>
-      <q-btn flat round icon="fab fa-instagram" class="bg-indigo-8 text-white"/>
-    </q-card-actions>
-  </q-card>
+        <q-card-actions align="center">
+<!--          <q-btn v-show="hasPatient" color="blue" label="Procedure Completed" class="q-mt-md" icon="task_alt"/>-->
+<!--          <q-btn v-show="hasPatient" color="red" label="Procedure Cancelled" class="q-mt-md" icon="cancel"/>-->
+        </q-card-actions>
+      </div>
+    </q-card>
+  </div>
 </template>
 
 <script>
 export default {
   name: "CardProfile",
-  props: ['avatar', 'name', 'des']
+  computed : {
+    patient_name () {
+      return this.$store.state.queues.patient_name
+    },
+    patient_code () {
+      return this.$store.state.queues.patient_code
+    }
+  }
 }
 </script>
 

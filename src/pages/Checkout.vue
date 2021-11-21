@@ -1,325 +1,153 @@
 <template>
-  <q-page class="q-pa-sm bg-white">
-    <div class="row q-col-gutter-sm">
-      <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
-        <q-stepper
-          v-model="step"
-          header-nav
-          ref="stepper"
-          color="primary"
-          animated
-        >
-          <q-step
-            :name="1"
-            title="Billing Details"
-            icon="shopping_cart"
-            :done="step > 1"
-            :header-nav="step > 1"
+  <q-card>
+    <q-stepper
+      v-model="step"
+      ref="stepper"
+      color="primary"
+      animated
+    >
+      <q-step
+        :name="1"
+        title="Patient Information"
+        icon="settings"
+        :done="step > 1"
+      >
+        <div class="q-gutter-md row items-start">
+          <q-img
+            style="max-height: 50%; width: 300px; height: 300px"
+            :src="patient.profile"/>
+        </div>
+        <div class="q-gutter-md row items-start" style="padding-top: 3%; padding-left: 20px">
+          <q-file
+            v-model="profilePicture"
+            label="Upload Patient Image"
+            filled
+            counter
+            max-files="3"
+            multiple
+            style="max-width: 700px; width: 400px"
           >
+          </q-file>
+          <q-btn
+            v-if="profilePicture !== null"
+            color="primary"
+            @click="uploadImage"
+            style="height: 56px; width: 120px"
+            label="Upload"/>
+        </div>
+        <q-card-section>
+          <q-form class="q-gutter-md">
+            <q-input
+              filled
+              v-model="patient.name"
+              label="Your name *"
+              hint="Name and surname"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.email"
+              label="Your email *"
+              hint="Example: johndoe@gmail.com"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
             <div class="row">
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.first_name" label="First Name *"/>
-                </q-item>
+              <div class="block" style="margin-right: 9%; width: 30%">
+                <q-select v-model="patient.gender" :options="genders" label="Gender *" />
               </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.last_name" label="Last Name *"/>
-                </q-item>
-              </div>
-              <div class="col-12">
-                <q-item>
-                  <q-input dense autogrow outlined v-model="address_detail.address_line_1" class="full-width"
-                           label="Address line 1 *"/>
-                </q-item>
-              </div>
-              <div class="col-12">
-                <q-item>
-                  <q-input dense autogrow outlined v-model="address_detail.address_line_2" class="full-width"
-                           label="Address line 2 *"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.city" label="City *"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.state" label="State"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.zip_code" label="Zip Code"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.country" label="Country *"/>
-                </q-item>
+              <div class="block" style="margin-right: 9%; width: 30%">
+                <q-input filled v-model="patient.birth_date" mask="date" :rules="['date']"   label="Birthdate *">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                        <q-date v-model="patient.birth_date">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
+            <q-input
+              filled
+              v-model="patient.civil_status"
+              label="Civil Status *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.phone_number"
+              label="Phone Number *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.mobile_number"
+              label="Mobile Number *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+          </q-form>
+        </q-card-section>
+      </q-step>
 
-            <q-stepper-navigation>
-              <q-btn rounded @click="() => { done1 = true; step = 2 }" class="float-right q-mr-md q-mb-md" color="blue"
-                     label="Next"/>
-            </q-stepper-navigation>
-          </q-step>
+      <q-step
+        :name="2"
+        title="Patient Address"
+        icon="home"
+        :done="step > 2"
+      >
+        <q-card-section>
+          <q-form class="q-gutter-md">
+            <q-input
+              filled
+              v-model="patient.street_address"
+              label="Street Address *"
+              hint="#14 unit 421 Tiny Street"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.barangay"
+              label="Barangay *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.city"
+              label="City *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+            <q-input
+              filled
+              v-model="patient.province"
+              label="Province *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+          </q-form>
+        </q-card-section>
+      </q-step>
+      <template v-slot:navigation>
+        <q-stepper-navigation>
+          <q-btn @click="proceed()" color="primary" label="Next" v-if="step === 1"/>
+          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
+        </q-stepper-navigation>
+      </template>
+    </q-stepper>
+    <q-inner-loading :showing="isLoading">
+      <q-spinner-gears size="200px" color="primary" />
+    </q-inner-loading>
 
-          <q-step
-            :name="2"
-            title="Payment details"
-            icon="shopping_cart"
-            :done="step > 2"
-            :header-nav="step > 2"
-          >
-
-            <div class="row">
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="card_detail.name" label="Name on Card*"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense outlined class="full-width" v-model="address_detail.card_number"
-                           label="Card Number *"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense autogrow outlined v-model="address_detail.expiry_date" class="full-width"
-                           label="Expiry Date *"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-input dense autogrow outlined v-model="address_detail.cvv" class="full-width" label="CVV *"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-checkbox dense outlined class="full-width" v-model="address_detail.checkbox"
-                              label="Remember credit card details for next time"/>
-                </q-item>
-              </div>
-              <div class="col-6">
-                <q-item>
-                  <q-checkbox dense outlined class="full-width" v-model="address_detail.mode"
-                              label="Proceed with cash payment."/>
-                </q-item>
-              </div>
-            </div>
-
-            <q-stepper-navigation>
-              <q-btn rounded @click="() => { done2 = true; step = 3 }" class="float-right q-mr-md q-mb-md" color="blue"
-                     label="Next"/>
-              <q-btn flat @click="step = 1" color="primary" flat rounded label="Back" class="q-mr-sm float-right"/>
-            </q-stepper-navigation>
-          </q-step>
-
-          <q-step
-            :name="3"
-            title="Review"
-            icon="shopping_cart"
-            :header-nav="step > 3"
-          >
-            <div class="row">
-              <div class="col-12">
-                <q-item-label header class="text-h6">Services summary</q-item-label>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">Initial Checkup</q-item-label>
-                    <q-item-label caption>Caption</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    $10.99
-                  </q-item-section>
-                </q-item>
-                <q-separator></q-separator>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">Laboratory</q-item-label>
-                    <q-item-label caption>Caption Product 2</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    $19.99
-                  </q-item-section>
-                </q-item>
-                <q-separator></q-separator>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">Diagnosis</q-item-label>
-                    <q-item-label caption>Caption Product 3</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    $78.99
-                  </q-item-section>
-                </q-item>
-                <q-separator></q-separator>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">Medicines</q-item-label>
-                    <q-item-label caption>Caption Product 4</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    $178.99
-                  </q-item-section>
-                </q-item>
-                <q-separator></q-separator>
-
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">Consultation</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    Free
-                  </q-item-section>
-                </q-item>
-                <q-separator></q-separator>
-                <q-item class="full-width" style="border-top: 3px dotted blue">
-                  <q-item-section>
-                    <q-item-label lines="1">Total</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    $288.96
-                  </q-item-section>
-                </q-item>
-              </div>
-            </div>
-
-            <q-card class="rounded-borders">
-              <q-card-section horizontal>
-                <q-card-section class="col-5 q-pt-xs">
-                  <div class="text-h6 text-center">Patient</div>
-                  <div class="text-subtitle1 ">Andy Stockton</div>
-                  <div class="text-subtitle2">
-                    4841 Jackston Locks
-                  </div>
-                </q-card-section>
-                <q-card-section class="col-7 q-pt-xs">
-                  <div class="text-h6 text-center">Payment details</div>
-                  <div class="text-subtitle1 q-mb-xs">Mode of Payment  - Card</div>
-                  <div class="text-subtitle1 q-mb-xs">Card type  - Visa</div>
-                  <div class="text-subtitle1 q-mb-xs">Card holder  - A**y Stockton</div>
-                  <div class="text-subtitle1 q-mb-xs">Card Number  - xxxx-xxxx-xxxx-1234</div>
-                  <div class="text-subtitle1 q-mb-xs">Expiry date - 04/2012</div>
-                </q-card-section>
-
-
-              </q-card-section>
-            </q-card>
-
-            <q-stepper-navigation>
-
-              <q-btn rounded @click="done3 = true" class="float-right q-mr-md q-mb-md" color="blue"
-                     label="Submit Checkout"/>
-              <q-btn flat @click="step = 2" color="primary" flat rounded label="Back" class="q-mr-sm float-right"/>
-            </q-stepper-navigation>
-          </q-step>
-        </q-stepper>
-      </div>
-      <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-        <q-card class="bg-grey-2">
-          <q-card-section class="text-center text-h6 text-black ">
-            <q-icon name="shopping_cart" class="q-mr-sm"/>
-            Services summary
-          </q-card-section>
-          <q-card-section horizontal>
-            <q-card-section class="col-5 flex flex-center">
-              <q-img height="80px"
-                     class="rounded-borders"
-                     src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-            </q-card-section>
-            <q-card-section class="">
-              <div class="text-subtitle2 q-mt-sm">Initial Checkup</div>
-              <div class="text-subtitle2  q-mb-xs">$10.99</div>
-            </q-card-section>
-          </q-card-section>
-          <q-separator/>
-          <q-card-section horizontal class="q-pa-none">
-            <q-card-section class="col-5 flex flex-center">
-              <q-img height="80px"
-                     class="rounded-borders"
-                     src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-            </q-card-section>
-            <q-card-section class="">
-              <div class="text-subtitle2 q-mt-md">Laboratory</div>
-              <div class="text-subtitle2  q-mb-xs">$19.99</div>
-            </q-card-section>
-          </q-card-section><q-separator/>
-          <q-card-section horizontal class="q-pa-none">
-            <q-card-section class="col-5 flex flex-center">
-              <q-img height="80px"
-                     class="rounded-borders"
-                     src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-            </q-card-section>
-            <q-card-section class="">
-              <div class="text-subtitle2 q-mt-md">Diagnosis</div>
-              <div class="text-subtitle2 q-mb-xs">$78.99</div>
-            </q-card-section>
-          </q-card-section><q-separator/>
-          <q-card-section horizontal class="q-pa-none">
-            <q-card-section class="col-5 flex flex-center">
-              <q-img height="80px"
-                     class="rounded-borders"
-                     src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-            </q-card-section>
-            <q-card-section class="">
-              <div class="text-subtitle2 q-mt-md">Medicines
-              </div>
-              <div class="text-subtitle2 q-mb-xs">$178.99
-              </div>
-            </q-card-section>
-          </q-card-section>
-          </q-card-section><q-separator/>
-          <q-card-section horizontal class="q-pa-none">
-            <q-card-section class="col-5 flex flex-center">
-              <q-img height="80px"
-                     class="rounded-borders"
-                     src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-            </q-card-section>
-            <q-card-section class="">
-              <div class="text-subtitle2 q-mt-md">Consultation
-              </div>
-              <div class="text-subtitle2 q-mb-xs">$0
-              </div>
-            </q-card-section>
-          </q-card-section>
-          <q-separator></q-separator>
-          <q-card-section class="row">
-            <div class="  col-12 text-h6 full-width">
-              <div class="float-right q-mr-md">
-                Total : <span class="text-blue">$288.96</span></div>
-            </div>
-          </q-card-section>
-
-        </q-card>
-      </div>
-    </div>
-
-  </q-page>
+  </q-card>
 </template>
-
-<script>
-    export default {
-        name: "Checkout",
-        data() {
-            return {
-                step: 1,
-                address_detail: {},
-                card_detail: {}
-            }
-        }
-    }
-</script>
-
-<style scoped>
-
-</style>

@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import auth from './auth'
+import categoryProcedures from './category-procedures'
 import patients from './patients'
+import procedures from './procedures'
+import queues from './queues'
+
 
 Vue.use(Vuex)
 
@@ -19,7 +23,10 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       auth,
-      patients
+      categoryProcedures,
+      patients,
+      procedures,
+      queues
     },
 
     // enable strict mode (adds overhead!)
