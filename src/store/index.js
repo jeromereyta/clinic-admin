@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import categoryProcedures from './category-procedures'
+import fileTypes from './file-types'
 import patients from './patients'
 import procedures from './procedures'
 import queues from './queues'
@@ -24,6 +25,7 @@ export default function (/* { ssrContext } */) {
     modules: {
       auth,
       categoryProcedures,
+      fileTypes,
       patients,
       procedures,
       queues

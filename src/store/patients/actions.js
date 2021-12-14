@@ -83,11 +83,43 @@ export function addPatientVisit({commit}, patientVisit) {
   );
 }
 
+export function addPatientVisitFile({commit}, patientVisit) {
+  return PatientService.createPatientVisitFile(patientVisit).then(
+    patientVisit => {
+      return Promise.resolve(patientVisit);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
 
 export function addPatientProcedure({commit}, patientProcedure) {
   return PatientService.createPatientProcedures(patientProcedure).then(
     patientProcedure => {
       return Promise.resolve(patientProcedure);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
+
+export function patientVisitsByPatient({commit}, patientCode) {
+  return PatientService.getPatientVisitsByPatient(patientCode).then(
+    patientVisits => {
+      return Promise.resolve(patientVisits);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
+
+export function patientVisitByID({commit}, patientVisitId) {
+  return PatientService.getPatientVisitsByID(patientVisitId).then(
+    patientVisit => {
+      return Promise.resolve(patientVisit);
     },
     error => {
       return Promise.reject(error);

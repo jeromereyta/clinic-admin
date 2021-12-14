@@ -2,9 +2,9 @@
   <q-card>
     <q-card-section>
       <div class="text-h6 text-grey-8">
-        Patient Admitted Today
-        <q-btn label="Admit Patient" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="patientActionSelection=true"/>
-      </div>
+      Patient Admitted Today
+      <q-btn label="Admit Patient" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="patientActionSelection=true"/>
+    </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
       <q-table
@@ -127,9 +127,10 @@
                  flat color="primary"
                  label="New Patient"
                  icon="person_add"
-                 @click="patientView=true;patientActionSelection=false"
+                 @click="proceedOnAdmission()"
           />
-          <q-btn v-close-popup flat color="primary" label="Existing Patient" icon="person_search" @click="openPatientVisitView();"/>
+          <q-btn v-close-popup flat color="primary" label="Existing Patient" icon="person_search" @click="openPatientVisitView
+          ();"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -322,7 +323,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="patientVisitView" >
-      <q-card style="width: 500px; max-width: 100vw; height: 800px; max-height: 100vw;" class="my-card" flat bordered>
+      <q-card style="width: 500px; max-width: 100vw; height: 400px; max-height: 100vw;" class="my-card" flat bordered>
           <q-item>
             <q-item-section>
               <q-item-label>Existing Patient</q-item-label>
@@ -331,93 +332,44 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-        <div class="fill">
-          <q-img
-            style="max-height: 50%; width: 50%; height: 50%"
-            src="https://s4be.cochrane.org/app/uploads/2013/04/shareddecision.jpg" />
-        </div>
           <q-separator />
-          <q-card-section horizontal>
-            <div class="q-pa-md">
-            <q-card-section class="col-4">
-                  <q-select
-                    filled
-                    v-model="selectedPatient"
-                    use-input
-                    hide-selected
-                    fill-input
-                    input-debounce="0"
-                    :options="patientOptions"
-                    option-label="name"
-                    @filter="filterPatients"
-                    :loading="loadingPatients"
-                    hint="Select Patient"
-                    style="width: 400px; padding-bottom: 32px"
-                  >
-                    <template v-slot:append>
-                      <q-icon  v-if="selectedPatient!==null" v name="cancel" @click.stop="selectedPatient = null" class="cursor-pointer" />
-                      <q-icon name="person_search " />
-                    </template>
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
+        <q-card-section class="col-4">
+          <q-select
+            filled
+            v-model="selectedPatient"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            :options="patientOptions"
+            option-label="name"
+            @filter="filterPatients"
+            :loading="loadingPatients"
+            hint="Select Patient"
+            style="width: 400px; padding-bottom: 32px"
+          >
+             <template v-slot:append>
+               <q-icon  v-if="selectedPatient!==null" v name="cancel" @click.stop="selectedPatient = null" class="cursor-pointer" />
+               <q-icon name="person_search " />
+            </template>
+              <template v-slot:no-option>
+               <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+            </template>
+          </q-select>
+       </q-card-section>
 
-            </q-card-section>
-                <q-card-section v-if="selectedPatient !== null">
-                  <q-form class="q-gutter-md">
-                    <q-input
-                      filled
-                      disable
-                      v-model="selectedPatient.name"
-                      label="Patient Name"
-                      lazy-rules
-                      :rules="[ val => val && val.length > 0 || 'Please type something']"
-                    />
-                      <q-input
-                        filled
-                        v-model="patient_visit.attending_doctor"
-                        label="Attending Doctor *"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Please type something']"
-                      />
-                      <q-input
-                        filled
-                        v-model="patient_visit.patient_bp"
-                        label="Patient BP *"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Please type something']"
-                      />
-                      <q-input
-                        filled
-                        v-model="patient_visit.patient_height"
-                        label="Height *"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Please type something']"
-                      />
-                      <q-input
-                        filled
-                        v-model="patient_visit.patient_weight"
-                        label="Weight *"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Please type something']"
-                      />
-                      <q-input
-                        filled
-                        v-model="patient_visit.remarks"
-                        label="Remarks *"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Please type something']"
-                      />
-                  </q-form>
-                </q-card-section>
-              <q-card-actions v-if="selectedPatient!==null">
-                <q-btn @click="createPatientVisit()" color="primary" label="Submit" />
-                <q-btn @click="patientVisitView=false" color="secondary" :label="'Cancel'" class="q-ml-sm"/>
+        <q-card-section horizontal>
+            <div class="q-pa-md">
+              <q-card-actions >
+                <q-btn
+                  v-if="selectedPatient!==null"
+                  @click="proceedOnAdmission(selectedPatient.patient_code)" color="blue"
+                       label="Create Patient Visit Log" />
+                <q-btn flat color="primary" @click="patientVisitView=false;patientActionSelection=true;selectedPatient=null" label="Back" class="q-ml-sm" />
               </q-card-actions>
             </div>
 
@@ -460,6 +412,10 @@ export default {
     return {
       user_details: {
         birth_date: '1990/01/01'
+      },
+      order : {
+        payment_method : null,
+        remarks : null,
       },
       patientActionSelection: false,
       patientView: false,
@@ -534,7 +490,7 @@ export default {
       }
 
       this.totalPrice = this.formatMoney(totalAmount);
-    }
+    },
   },
   methods: {
     submitPatientProcedure () {
@@ -619,9 +575,7 @@ export default {
       }
     },
     openPatientProcedure (patientVisit) {
-      this.selectedPatientVisit = patientVisit;
-      this.selectedProcedures = [];
-      this.patientProcedureView = true;
+      this.$router.push({ name: 'patient-visit',  params: { patient_visit_id: patientVisit.id }})
     },
     openPatientVisitView () {
       this.patientVisitView = true;
@@ -705,6 +659,17 @@ export default {
         }
       }
       this.patientError = true;
+    },
+    proceedOnAdmission () {
+      this.patientActionSelection = false;
+
+      let patientCode = this.selectedPatient === null ? null : this.selectedPatient.id;
+
+      if (patientCode !== null ) {
+        this.$router.push({ name: 'admit-patient', query: { patientCode: patientCode } })
+      } else {
+        this.$router.push({ name: 'admit-patient' })
+      }
     },
     getPatientVisits () {
       this.isLoading = true;

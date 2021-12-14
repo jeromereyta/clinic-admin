@@ -1,4 +1,5 @@
 <template>
+  <q-page class="q-pa-sm">
   <div class="q-pa-md">
     <q-card>
       <q-tabs
@@ -17,15 +18,14 @@
 
       <q-separator />
       <q-dialog v-model="uploadImageModal" transition-show="scale">
-        <q-card style="width: 500px; max-width: 100vw; height: 700px; max-height: 100vw;">
           <q-uploader
-            style="width: 500px; height: 700px;"
+            :disable="isLoading"
+            style="height: 40%; width: 30%; object-fit: contain"
             label="Restricted to images"
             :factory="uploadImage"
             accept=".jpg, image/*"
             @rejected="onRejected"
           />
-        </q-card>
       </q-dialog>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="info">
@@ -43,7 +43,7 @@
             >
               <div class="q-gutter-md row items-start">
                 <q-img
-                  style="max-height: 500px; max-width: 500px; "
+                  style="height: 25%; width: 30%; object-fit: contain"
                   :src="patient.profile"/>
               </div>
               <div class="q-gutter-md row items-start" style="padding-top: 3%; padding-left: 20px">
@@ -161,7 +161,7 @@
                 <q-btn @click="proceed()" color="primary" label="Next" v-if="step === 1"/>
                 <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
                 <q-btn @click="updatePatient()" color="blue" label="Update" v-if="hasInfoUpdate === true"  class="q-ml-sm" />
-                <q-btn style="float: right"  color="red" @click="" label="Back to Patients" />
+                <q-btn style="float: right"  color="red" label="Back to Patients" @click="backToPatients()"/>
 
               </q-stepper-navigation>
             </template>
@@ -173,8 +173,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="history">
-          <div class="text-h6">Visits</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <patient-visits :patient-visits="patientVisits" :is-loading="isPatientVisitLoading"/>
         </q-tab-panel>
 
         <q-tab-panel name="files">
@@ -201,6 +200,7 @@
       </q-card>
     </q-dialog>
   </div>
+  </q-page>
 </template>
 
 <script>
@@ -212,8 +212,6 @@ export default {
     const $q = Quasar
 
     function onRejected (rejectedEntries) {
-      // Notify plugin needs to be installed
-      // https://quasar.dev/quasar-plugins/notify#Installation
       $q.notify({
         type: 'negative',
         message: `${rejectedEntries.length} file(s) did not pass validation constraints`
@@ -223,14 +221,19 @@ export default {
     return { onRejected }
   },
   name: "Patient",
+  components: {
+    PatientVisits: () => import('./components/PatientVisits')
+  },
   data() {
     return {
       errorMessages : [],
       isLoading : false,
+      isPatientVisitLoading: false,
       genders: ['Male', 'Female', 'Others'],
       patient : {
         loaded : false
       },
+      patientVisits: [],
       patientError : false,
       originalDataPatient : null,
       profilePicture: null,
@@ -241,7 +244,9 @@ export default {
     }
   },
   created() {
-    this.fetchPatient()
+    const patientCode = this.$route.params.patient_code
+    this.fetchPatient(patientCode);
+    this.fetchPatientVisits(patientCode);
   },
   computed: {
   },
@@ -272,6 +277,9 @@ export default {
     },
   },
   methods: {
+    backToPatients () {
+      this.$router.push({ name: 'patients'})
+    },
     onRejected (rejectedEntries) {
       Quasar.notify({
         type: 'negative',
@@ -318,9 +326,26 @@ export default {
           }
         })
     },
-    fetchPatient () {
-      const patientCode = this.$route.params.patient_code
+    fetchPatientVisits (patientCode) {
+      this.isPatientVisitLoading = true;
 
+      this.$store.dispatch("patients/patientVisitsByPatient", patientCode).then(
+        response => {
+          this.isPatientVisitLoading = false;
+
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          } else if (response.status === 404) {
+            this.backToPatients()
+          }
+          else {
+            if (response.data !== null) {
+              this.patientVisits = response.data;
+            }
+          }
+        })
+    },
+    fetchPatient (patientCode) {
       this.isLoading = true;
 
       this.$store.dispatch("patients/patientInfo", patientCode).then(
@@ -329,8 +354,10 @@ export default {
 
           if (response.status === 401) {
             this.$router.push("/UsersAdmin");
-          } else {
-
+          } else if (response.status === 404) {
+            this.backToPatients()
+          }
+          else {
             if (response.data !== null) {
               this.initiatePatient(response.data)
             }
@@ -364,10 +391,6 @@ export default {
       const patientCode = this.$route.params.patient_code
 
       this.isLoading = true;
-      let data = {
-        patient_code : patientCode,
-        image : files
-      }
 
       const fd = new FormData()
       fd.append('image', files[0]);
@@ -375,14 +398,18 @@ export default {
 
       this.$store.dispatch("patients/updateImage", fd).then(
         response => {
-          this.isLoading = false;
-
           if (response.status === 401) {
             this.$router.push("/UsersAdmin");
+            this.isLoading = false;
+
           } else if (response.status > 200) {
+            this.isLoading = false;
+
             this.processError(response.data)
             this.step = 1;
           } else {
+            this.isLoading = false;
+
             this.initiatePatient(response.data)
             this.uploadImageModal = false;
           }
@@ -393,4 +420,23 @@ export default {
 </script>
 
 <style scoped>
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.portrait {
+  height: 80px;
+  width: 30px;
+}
+
+.landscape {
+  height: 30px;
+  width: 80px;
+}
+
+.square {
+  height: 75px;
+  width: 75px;
+}
 </style>

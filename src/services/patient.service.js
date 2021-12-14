@@ -61,6 +61,18 @@ class PatientService {
       });
   }
 
+  createPatientVisitFile(patientVisit) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .post(`patient-visits/upload-file`, patientVisit, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
   createPatientProcedures(patientProcedure) {
     let options = {headers: authHeader()}
 
@@ -108,6 +120,28 @@ class PatientService {
     let options = {headers: authHeader()}
     return axiosInstance
       .put(`patients/` + patient.id, patient, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  getPatientVisitsByPatient(patientCode) {
+    let options = {headers: authHeader()}
+    return axiosInstance
+      .get(`patient-visits/` + patientCode, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  getPatientVisitsByID(patientVisitId) {
+    let options = {headers: authHeader()}
+    return axiosInstance
+      .get(`patient-visit/` + patientVisitId, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {

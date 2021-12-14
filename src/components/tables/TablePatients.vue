@@ -25,7 +25,6 @@
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
             <q-btn icon="edit" size="sm" flat dense @click="openPatientView(props.row)"/>
-            <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense/>
           </q-td>
         </template>
       </q-table>
@@ -45,22 +44,6 @@
             icon="settings"
             :done="step > 1"
           >
-            <div class="q-gutter-md row items-start">
-              <q-img
-                style="max-height: 50%; width: 50%; height: 50%"
-                :src="user_details.profile"/>
-              <q-file
-                v-model="profilePicture"
-                label="Upload Patient Image"
-                filled
-                counter
-                max-files="3"
-                multiple
-                style="max-width: 300px"
-              >
-              </q-file>
-              <q-btn v-if="profilePicture !== null" v-close-popup label="Upload" color="primary" flat @click="uploadImage" />
-            </div>
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input

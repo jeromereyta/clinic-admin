@@ -3,6 +3,11 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+      {
+        path: '/AdmitPatient',
+        component: () => import('pages/Admission/AdmitPatient.vue'),
+        name: 'admit-patient',
+      },
       {path: '', component: () => import('pages/Dashboard.vue')},
       {path: '/Queue', component: () => import('pages/QueuePage.vue')},
       {path: '/Dashboard2', component: () => import('pages/Dashboard2.vue')},
@@ -30,8 +35,14 @@ const routes = [
         component: () => import('pages/Patients/Patient.vue'),
         name: 'patient',
       },
+      {
+        path: '/PatientVisit/:patient_visit_id',
+        component: () => import('pages/Admission/PatientVisit.vue'),
+        name: 'patient-visit',
+      },
       {path: '/CategoryProcedures',component: () => import('pages/Settings/CategoryProcedures.vue')},
       {path: '/Procedures',component: () => import('pages/Settings/Procedures.vue')},
+      {path: '/FileTypes',component: () => import('pages/Settings/FileTypes.vue')},
     ]
   },
   {
