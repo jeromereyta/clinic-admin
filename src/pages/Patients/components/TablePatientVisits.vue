@@ -86,7 +86,7 @@
             </q-form>
           </q-card-section>
         <q-inner-loading :showing="saving">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
       </q-card>
     </q-dialog>
@@ -137,6 +137,7 @@ export default {
       window.open(fileUpload.link, '_blank');
     },
     openPatientVisit (patientVisit) {
+      this.$router.push({ name: 'patient-visit',  params: { patient_visit_id: patientVisit.id }})
       this.patientVisitModal = true;
       this.selectedPatientVisit = patientVisit;
       this.filesData = this.selectedPatientVisit.files.map(file => {

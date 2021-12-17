@@ -5,7 +5,7 @@
         <q-card v-bind:style="$q.screen.lt.sm?{'width': '80%'}:{'width':'30%'}">
           <q-card-section>
             <q-avatar size="103px" class="absolute-center shadow-10">
-              <img src="profile.svg">
+              <img src="nurse.png">
             </q-avatar>
           </q-card-section>
           <q-card-section>
@@ -40,6 +40,9 @@
               </div>
             </q-form>
           </q-card-section>
+          <q-inner-loading :showing="isLoading">
+            <q-spinner-grid size="200px" color="pink" />
+          </q-inner-loading>
         </q-card>
       </q-page>
     </q-page-container>
@@ -50,6 +53,7 @@
     export default {
         data() {
             return {
+                isLoading: false,
                 username: '',
                 password: ''
             }
@@ -60,23 +64,27 @@
           },
         },
         created() {
+          this.$store.dispatch("auth/logout");
           if (this.loggedIn) {
-            this.$router.push("/");
+            // this.$router.push("/");
           }
         },
         methods: {
-          login() {
+          login () {
+            this.isLoading = true;
+
             let data = {
-              "email": this.username,
-              "password": this.password
-            };
+              email: this.username,
+              password: this.password,
+            }
 
             this.$store.dispatch("auth/login", data).then(
               () => {
-                this.$router.push("/profile");
+                this.isLoading = false;
+                this.$router.push("/");
               },
               (error) => {
-                this.loading = false;
+                this.isLoading = false;
                 this.message =
                   (error.response &&
                     error.response.data &&
@@ -85,7 +93,7 @@
                   error.toString();
               }
             );
-          },
+          }
         },
     }
 </script>
@@ -93,6 +101,6 @@
 <style>
 
   .bg-image {
-   background-image: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
+   background-image: linear-gradient(135deg, #d52ee0 0%, #e0297f 100%);
   }
 </style>

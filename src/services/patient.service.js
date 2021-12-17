@@ -1,7 +1,7 @@
 import {axiosInstance} from "boot/axios";
 import authHeader from './auth-header';
 
-const API = `http://localhost:80/api`;
+const API = `http://phplaravel-704289-2331431.cloudwaysapps.com`;
 
 class PatientService {
   getList() {
@@ -142,6 +142,30 @@ class PatientService {
     let options = {headers: authHeader()}
     return axiosInstance
       .get(`patient-visit/` + patientVisitId, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  createPatientTransaction(transaction) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .post(`transaction`, transaction, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  updateProcedureQueue(procedureQueue) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .put(`procedures-queues`, procedureQueue, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {

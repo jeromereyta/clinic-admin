@@ -34,7 +34,7 @@
         </div>
       </section>
       <q-inner-loading :showing="isLoading">
-        <q-spinner-gears size="50px" color="primary" />
+        <q-spinner-grid size="50px" color="pink" />
       </q-inner-loading>
     </q-page-container>
 
@@ -106,9 +106,6 @@ export default {
     }
   },
   methods: {
-    test () {
-      console.log('test')
-    },
     login (data) {
       this.isLoading = true;
 

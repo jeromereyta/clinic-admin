@@ -27,15 +27,14 @@ export default function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach((to, from, next) => {
-    const publicPages = ['/UsersAdmin',];
+    const publicPages = ['/Login-1',];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 
     // trying to access a restricted page + not logged in
     // redirect to login page
-    console.log(loggedIn)
-    if (authRequired && !loggedIn) {
-      next('/UsersAdmin');
+    if (authRequired && (!loggedIn || loggedIn === null  )) {
+      next('/Login-1');
     } else {
       next();
     }

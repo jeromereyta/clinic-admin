@@ -104,7 +104,7 @@
           </div>
         </q-card-section>
         <q-inner-loading :showing="createPatientLoading">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
       </q-card>
     </q-dialog>
@@ -318,12 +318,12 @@
           </template>
         </q-stepper>
         <q-inner-loading :showing="createPatientLoading">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
       </q-card>
     </q-dialog>
     <q-dialog v-model="patientVisitView" >
-      <q-card style="width: 500px; max-width: 100vw; height: 400px; max-height: 100vw;" class="my-card" flat bordered>
+      <q-card style="width: 500px; max-width: 100vw; height: 300px; max-height: 100vw;" class="my-card" flat bordered>
           <q-item>
             <q-item-section>
               <q-item-label>Existing Patient</q-item-label>
@@ -364,19 +364,23 @@
 
         <q-card-section horizontal>
             <div class="q-pa-md">
-              <q-card-actions >
+              <q-card-actions style="float: right" >
                 <q-btn
                   v-if="selectedPatient!==null"
                   @click="proceedOnAdmission(selectedPatient.patient_code)" color="blue"
                        label="Create Patient Visit Log" />
-                <q-btn flat color="primary" @click="patientVisitView=false;patientActionSelection=true;selectedPatient=null" label="Back" class="q-ml-sm" />
+                <q-btn
+                       flat color="primary"
+                       @click="patientVisitView=false;patientActionSelection=true;selectedPatient=null"
+                       label="Back"
+                       class="q-ml-sm" />
               </q-card-actions>
             </div>
 
           </q-card-section>
 
         <q-inner-loading :showing="createPatientLoading">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
       </q-card>
     </q-dialog>
@@ -443,6 +447,7 @@ export default {
       show_filter: false,
       step: 1,
       columns: [
+        {name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left'},
         {name: 'patient_code', label: 'Patient ID', field: 'patient_code', sortable: true, align: 'left'},
         {
           name: 'name',
@@ -457,7 +462,7 @@ export default {
         {name: 'patient_bp', label: 'Patient BP', field: 'patient_bp', align: 'left'},
         {name: 'remarks', label: 'Remarks', field: 'remarks', align: 'left'},
         {name: 'created_at', label: 'Date Created', field: 'created_at', align: 'left'},
-        {name: 'Action', label: 'Schedule Appointment', field: 'Action', sortable: false, align: 'center'}
+        {name: 'Action', label: 'View Log', field: 'Action', sortable: false, align: 'center'}
       ],
       errorMessages : [],
       selectedPatient: null
@@ -470,7 +475,10 @@ export default {
   },
   computed: {
     patientVisitsComputed: function () {
-      return this.$store.state.patients.patientVisits
+      return this.$store.state.patients.patientVisits.map(patientVisit => {
+        patientVisit.status = patientVisit.has_queue === false ? 'Not paid/ Not yet placed' : 'Paid / In Queue';
+        return patientVisit;
+      })
     },
     patientsComputed: function () {
       return this.$store.state.patients.patients

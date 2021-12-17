@@ -236,7 +236,7 @@
         </template>
       </q-stepper>
       <q-inner-loading :showing="isLoading">
-        <q-spinner-gears size="200px" color="primary" />
+        <q-spinner-grid size="200px" color="pink" />
       </q-inner-loading>
       <q-dialog v-model="patientError" transition-show="scale">
         <q-card class="bg-red-4 text-white" style="width: 300px">
@@ -267,19 +267,16 @@
         </q-card>
       </q-dialog>
       <q-dialog persistent  v-model="patientCreating" transition-show="scale"  transition-hide="scale">
-        <q-card class="bg-blue-4 text-white" style="width: 600px">
+        <q-card class="bg-white text-pink-4" style="width: 600px">
           <q-card-section>
             <div class="text-h6">
-              Patient information being creating . . .</div>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <div>
-              <q-spinner-gears
-                color="primary"
-                size="5em"
-              />
-              <q-tooltip :offset="[0, 8]">Processing</q-tooltip>
+              Patient information being creating
             </div>
+            <q-spinner-grid
+              color="pink"
+              size="7em"
+            />
+            <q-tooltip :offset="[0, 8]">Processing</q-tooltip>
           </q-card-section>
         </q-card>
       </q-dialog>
@@ -373,7 +370,6 @@ export default {
             }
           })
       }
-
     },
     fetchPatient (patientCode) {
       this.isLoading = true;

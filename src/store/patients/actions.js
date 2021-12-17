@@ -126,3 +126,15 @@ export function patientVisitByID({commit}, patientVisitId) {
     }
   );
 }
+
+export function createPatientTransaction({commit}, transaction) {
+  return PatientService.createPatientTransaction(transaction).then(
+    transaction => {
+      return Promise.resolve(transaction);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
+

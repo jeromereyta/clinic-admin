@@ -76,7 +76,7 @@
           </q-form>
         </q-card-section>
         <q-inner-loading :showing="createLoading">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
 
       </q-card>

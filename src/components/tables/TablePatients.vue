@@ -203,7 +203,7 @@
           </template>
         </q-stepper>
         <q-inner-loading :showing="createPatientLoading">
-          <q-spinner-gears size="200px" color="primary" />
+          <q-spinner-grid size="200px" color="pink" />
         </q-inner-loading>
 
       </q-card>

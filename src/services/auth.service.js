@@ -1,6 +1,6 @@
 import {axiosInstance} from "boot/axios";
 
-const API = `http://localhost:80/api`;
+const API = `http://phplaravel-704289-2331431.cloudwaysapps.com`;
 
 class AuthService {
   login(user) {

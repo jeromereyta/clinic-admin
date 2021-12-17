@@ -12,8 +12,7 @@
         narrow-indicator
       >
         <q-tab name="info" label="Personal Information" />
-        <q-tab name="history" label="History" />
-        <q-tab name="files" label="Uploaded Files" />
+        <q-tab name="history" label="Logs" />
       </q-tabs>
 
       <q-separator />
@@ -167,18 +166,14 @@
             </template>
           </q-stepper>
           <q-inner-loading :showing="isLoading">
-            <q-spinner-gears size="200px" color="primary" />
+            <q-spinner-grid size="200px" color="pink" />
           </q-inner-loading>
 
         </q-tab-panel>
 
         <q-tab-panel name="history">
+          <div class="text-h6">Patient Visits</div>
           <patient-visits :patient-visits="patientVisits" :is-loading="isPatientVisitLoading"/>
-        </q-tab-panel>
-
-        <q-tab-panel name="files">
-          <div class="text-h6">Files</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </q-tab-panel>
       </q-tab-panels>
     </q-card>

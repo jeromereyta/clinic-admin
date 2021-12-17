@@ -15,3 +15,15 @@ export function queueList({commit}) {
 export function setPatientInProgress({commit}, patient_name, patient_code) {
     commit('setPatientInProgress', patient_name, patient_code);
 }
+
+
+export function updateProcedureQueue({commit}, procedureQueue) {
+  return PatientService.updateProcedureQueue(procedureQueue).then(
+    procedureQueue => {
+      return Promise.resolve(procedureQueue);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}

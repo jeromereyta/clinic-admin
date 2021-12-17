@@ -13,7 +13,7 @@
             :name="1"
             title="Patient Information and Visit Logs"
             icon="shopping_cart"
-            :done="step > 1"
+            :done="step > 1 || inQueue || isPast"
             :header-nav="step > 1"
           >
             <div class="row">
@@ -62,7 +62,7 @@
             :name="2"
             title="Upload Files"
             icon="file"
-            :done="step > 2"
+            :done="step > 2 || inQueue || isPast"
             :header-nav="step > 2"
           >
             <q-card-section>
@@ -80,14 +80,14 @@
             :name="3"
             title="Procedures"
             icon="file"
-            :done="step > 3"
+            :done="step > 3 || inQueue || isPast"
             :header-nav="step > 3"
           >
               <q-card-section>
                 <table-patient-procedures :procedures="procedures" ></table-patient-procedures>
               </q-card-section>
             <q-stepper-navigation>
-              <q-btn style="float: left" label="Add Procedures" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openProcedureModal()"/>
+              <q-btn v-if="!inQueue && !isPast" style="float: left" label="Add Procedures" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openProcedureModal()"/>
               <q-btn rounded @click="() => { done2 = true; step = 4 }" class="float-right q-mr-md q-mb-md" color="blue"
                      label="Next"/>
               <q-btn flat @click="step = 2" color="primary" rounded label="Back" class="q-mr-sm float-right"/>
@@ -98,7 +98,8 @@
             :name="4"
             title="Review your Procedures"
             icon="shopping_cart"
-            :header-nav="step > 4"
+            :header-nav="step > 4 || inQueue || isPast"
+            :done="inQueue || isPast"
           >
             <q-card class="rounded-borders">
               <div class="row">
@@ -133,7 +134,7 @@
                     </div>
                     <div class="col-6">
                       <q-item>
-                        <q-input dense outlined class="full-width" v-model="order.payment_method" label="Eg. Cash, Gcash, Card"/>
+                        <q-input :disable="inQueue || isPast" dense outlined class="full-width" v-model="order.payment_method" label="Eg. Cash, Gcash, Card"/>
                       </q-item>
                     </div>
                   </div>
@@ -145,7 +146,7 @@
                     </div>
                     <div class="col-6">
                       <q-item>
-                        <q-input dense outlined class="full-width" v-model="order.remarks" label=""/>
+                        <q-input :disable="inQueue || isPast" dense outlined class="full-width" v-model="order.remarks" label=""/>
                       </q-item>
                     </div>
                   </div>
@@ -171,24 +172,49 @@
                       <q-item>{{dateToday}}</q-item>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <q-item>
+                        <div class="text-subtitle1" style="max-width: 200px;">Status: </div>
+                      </q-item>
+                    </div>
+                    <div class="col-6" v-if="inQueue">
+                      <q-item>
+                        <q-chip outline color="green" text-color="white" icon="done">
+                          Paid
+                        </q-chip>
+                      </q-item>
+                    </div>
+                    <div class="col-6" v-else-if="!inQueue && isPast">
+                      <q-item>
+                        <q-chip outline color="red" text-color="blue" icon="unpublished">
+                          Expired and Transaction wasn't placed.
+                        </q-chip>
+                      </q-item>
+                    </div>
+                    <div class="col-6" v-else>
+                      <q-item>
+                        <q-chip outline color="yellow" text-color="white" icon="unpublished">
+                          Not Paid
+                        </q-chip>
+                      </q-item>
+                    </div>
+                  </div>
                 </q-card-section>
               </q-card-section>
             </q-card>
-
-
             <q-stepper-navigation>
               <q-btn style="float: left" @click="$router.push('/')" flat color="red" label="Back to Homepage" class="q-ml-sm"/>
-              <q-btn rounded @click="done3 = true" class="float-right q-mr-md q-mb-md" color="blue"
+              <q-btn v-if="!inQueue && !isPast" rounded @click="submitPatientTransaction()" class="float-right q-mr-md q-mb-md" color="blue"
                      label="Place Order"/>
               <q-btn flat @click="step = 3" color="primary" rounded label="Back" class="q-mr-sm float-right"/>
+              <q-btn v-if="inQueue" flat @click="generateReport()" color="green" rounded label="Download PDF Receipt" class="q-mr-sm float-right"/>
             </q-stepper-navigation>
           </q-step>
         </q-stepper>
       </div>
     </div>
-    <q-inner-loading :showing="isLoading">
-      <q-spinner-gears size="200px" color="primary" />
-    </q-inner-loading>
+
     <q-dialog v-model="uploadFileModal" transition-show="scale">
       <q-card class="my-card">
         <q-card-section style="margin-top: 10px">
@@ -238,23 +264,23 @@
         <q-card-actions align="right">
           <q-btn v-if="file !== null" v-close-popup flat color="primary" label="Upload the File" icon="folder_open" @click="uploadFile()"/>
         </q-card-actions>
-        <q-dialog v-model="patientError" transition-show="scale">
-          <q-card class="bg-red-4 text-white" style="width: 300px">
-            <q-card-section>
-              <div class="text-h6">Error</div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <ul>
-                <li v-for="message in errorMessages" :key="message">
-                  {{ message }}
-                </li>
-              </ul>
-            </q-card-section>
-            <q-card-actions align="right" class="bg-white text-teal">
-              <q-btn flat label="OK" v-close-popup />
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="patientError" transition-show="scale">
+      <q-card class="bg-red-4 text-white" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Error</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <ul>
+            <li v-for="message in errorMessages" :key="message">
+              {{ message }}
+            </li>
+          </ul>
+        </q-card-section>
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <q-dialog v-model="procedureModal" transition-show="scale">
@@ -307,17 +333,160 @@
             <q-btn style="float: left" @click="submitPatientProcedure()" flat color="blue" label="Submit" class="q-ml-sm"/>
             <q-btn style="float: left" @click="procedureModal=false" flat color="red" label="Cancel" class="q-ml-sm"/>
           </q-card-actions>
+          <q-inner-loading :showing="isLoading">
+            <q-spinner-grid size="200px" color="pink" />
+          </q-inner-loading>
       </q-card>
     </q-dialog>
+    <q-inner-loading :showing="isLoading">
+      <q-spinner-grid size="200px" color="pink" />
+    </q-inner-loading>
+    <VueHtml2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="false"
+      :paginate-elements-by-height="1400"
+      :filename="patient.patient_name + '- receipt -' + Date.now() "
+      :pdf-quality="2"
+      :manual-pagination="false"
+      pdf-format="a4"
+      pdf-orientation="landscape"
+      pdf-content-width="900px"
+      ref="html2Pdf"
+    >
+      <section slot="pdf-content">
+        <q-card class="rounded-borders">
+          <div class="row">
+            <div class="col-12">
+              <q-item-label header class="text-h4" style="color:deeppink;">
+                Clinica Medica
+              </q-item-label>
+              <q-item-label header class="text-h6">Services summary</q-item-label>
+              <div v-for="(item, index) in procedures" v-bind:key="item.id">
+                <q-item class="full-width">
+                  <q-item-section>
+                    <q-item-label lines="1">{{item.name}}</q-item-label>
+                    <q-item-label caption>{{item.description}}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                      <span>&#8369;
+                        {{item.price}}
+                      </span>
+                  </q-item-section>
+                </q-item>
+                <q-separator spaced inset></q-separator>
+              </div>
+            </div>
+          </div>
+          <q-separator />
+          <q-card-section horizontal>
+            <q-card-section class="col-7 q-pt-xs">
+              <q-item-label header class="text-h6">Payment Summary</q-item-label>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Patient Name: </div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>
+                    {{patient.patient_name}}
+                  </q-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Payment Method: </div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>
+                    {{order.payment_method}}
+                  </q-item>
+                </div>
+              </div>
+              <div class="row">
+                 <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Remarks: </div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>
+                    {{order.remarks}}
+                  </q-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Total Amount: </div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>
+                    <span>&#8369;</span> {{procedureAmount}}
+                  </q-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Payment Date: </div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>{{dateToday}}</q-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 200px;">Status: </div>
+                  </q-item>
+                </div>
+                <div class="col-6" v-if="inQueue">
+                  <q-item>
+                    <q-chip outline color="green" text-color="white" icon="done">
+                      Paid
+                    </q-chip>
+                  </q-item>
+                </div>
+                <div class="col-8" v-else-if="!inQueue && isPast">
+                  <q-item>
+                    <q-chip outline color="red" text-color="blue" icon="unpublished">
+                      Expired and Transaction wasn't placed.
+                    </q-chip>
+                  </q-item>
+                </div>
+                <div class="col-6" v-else>
+                  <q-item>
+                    <q-chip outline color="yellow" text-color="white" icon="unpublished">
+                      Not Paid
+                    </q-chip>
+                  </q-item>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card-section>
+        </q-card>
+        <!-- PDF Content Here -->
+      </section>
+
+    </VueHtml2pdf>
   </q-page>
 </template>
 
 <script>
 import { date } from 'quasar'
+import VueHtml2pdf from 'vue-html2pdf'
 
 export default {
   name: "PatientVisit",
   components: {
+    VueHtml2pdf,
     TableFileUploads: () => import('../Patients/components/TableFileUploads'),
     TablePatientProcedures: () => import('./components/TablePatientProcedures'),
   },
@@ -327,6 +496,8 @@ export default {
         payment_method : null,
         remarks : null,
       },
+      inQueue: false,
+      isPast: false,
       dateToday : date.formatDate(Date.now(), 'dddd, MMMM DD, YYYY'),
       createPatientLoading : false,
       loadingFileTypes : false,
@@ -405,6 +576,9 @@ export default {
     }
   },
   methods: {
+    generateReport () {
+      this.$refs.html2Pdf.generatePdf()
+    },
     getPatientVisit () {
       let patientVisitId = this.$route.params.patient_visit_id ?? null;
 
@@ -423,6 +597,16 @@ export default {
             else {
               if (response.data !== null) {
                 this.patient = response.data;
+                  this.isPast = this.patient.is_past;
+                  if (this.patient.total_summary !== null) {
+                    this.inQueue = true;
+                    this.order.remarks = this.patient.total_summary.remarks;
+                    this.order.payment_method = this.patient.total_summary.paymentMethod
+                    this.step = 4;
+                  } else {
+                    this.inQueue = false;
+                  }
+
               }
             }
           })
@@ -492,6 +676,30 @@ export default {
       }
       this.patientError = true;
     },
+    submitPatientTransaction () {
+      let transactionData = {
+        patient_visit_id: this.$route.params.patient_visit_id,
+        remarks: this.order.remarks,
+        payment_method: this.order.payment_method,
+        total_amount : this.procedureAmount
+      }
+
+      this.isLoading = true;
+
+      this.$store.dispatch("patients/createPatientTransaction", transactionData).then(
+        response => {
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+            this.isLoading = false;
+
+          } else if (response.status > 200) {
+            this.isLoading = false;
+            this.processError(response.data)
+          } else {
+            this.getPatientVisit()
+          }
+        })
+    },
     uploadFile () {
       const fd = new FormData()
 
@@ -526,7 +734,7 @@ export default {
         procedure_ids : [
           this.selectedProcedure.id
         ],
-        description : this.description
+        note : this.description
       };
 
       this.isLoading = true;
@@ -535,7 +743,6 @@ export default {
       this.$store.dispatch("patients/addPatientProcedure", patientProcedure).then(
         response => {
           this.createPatientLoading = false;
-          this.procedureModal = false;
 
           if (response.status === 401) {
             this.$router.push("/UsersAdmin");
@@ -543,6 +750,7 @@ export default {
             this.isLoading = false;
             this.processError(response.data)
           } else {
+            this.procedureModal = false;
             this.isLoading = false;
             this.getPatientVisit()
             this.description = null;

@@ -83,6 +83,14 @@
                 <q-item-label>Change User Type</q-item-label>
               </q-item-section>
             </q-item>
+            <q-item to="/Login-1" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar>
+                <q-icon name="admin_panel_settings"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Logged Out</q-item-label>
+              </q-item-section>
+            </q-item>
 <!--            <q-item to="/Profile" active-class="q-item-no-link-highlighting">-->
 <!--              <q-item-section avatar>-->
 <!--                <q-icon name="person"/>-->
