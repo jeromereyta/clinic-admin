@@ -105,6 +105,9 @@ export default {
       ]
     }
   },
+  created () {
+    this.$router.push("/Login-1");
+  },
   methods: {
     login (data) {
       this.isLoading = true;
