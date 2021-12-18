@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:80/api/`,
+  baseURL: `http://phplaravel-704289-2331431.cloudwaysapps.com/api/`,
   withCredentials: false
 })
 
