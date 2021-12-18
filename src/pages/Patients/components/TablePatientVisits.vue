@@ -143,7 +143,7 @@ export default {
       this.filesData = this.selectedPatientVisit.files.map(file => {
         return  {
           file_name : file.name,
-          link : 'http://localhost/storage/' + file.path,
+          link : 'https://phplaravel-704289-2331431.cloudwaysapps.com/storage/' + file.path,
           file_type_name: file.file_type.name,
           format : file.format
         };

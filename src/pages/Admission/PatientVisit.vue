@@ -542,7 +542,7 @@ export default {
       return this.patient.files.map(file => {
         return  {
           file_name : file.name,
-          link : 'http://localhost/storage/' + file.path,
+          link : 'https://phplaravel-704289-2331431.cloudwaysapps.com/storage/' + file.path,
           file_type_name: file.file_type.name,
           format : file.format
         };
@@ -600,7 +600,7 @@ export default {
                   this.isPast = this.patient.is_past;
                   if (this.patient.total_summary !== null) {
                     this.inQueue = true;
-                    this.order.remarks = this.patient.total_summary.remarks;
+                    this.order.remarks = this.patient.total_summary.remarks ?? ''
                     this.order.payment_method = this.patient.total_summary.paymentMethod
                     this.step = 4;
                   } else {
