@@ -1,7 +1,7 @@
 import {axiosInstance} from "boot/axios";
 import authHeader from './auth-header';
 
-const API = `http://phplaravel-704289-2331431.cloudwaysapps.com`;
+const API = `http://phplaravel-705740-2336961.cloudwaysapps.com`;
 
 class FileTypeService {
   getList() {

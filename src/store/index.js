@@ -10,7 +10,7 @@ import queues from './queues'
 
 
 Vue.use(Vuex)
-Vue.prototype.$hostname = 'http://phplaravel-704289-2331431.cloudwaysapps.com'
+Vue.prototype.$hostname = 'http://phplaravel-705740-2336961.cloudwaysapps.com'
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
