@@ -3,7 +3,7 @@
     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
       <q-card class="" style="background-color: #38b1c5">
         <q-card-section class="text-h6 text-white">
-          Today's View
+          
         </q-card-section>
         <q-card-section class="q-pa-none">
           <IEcharts style="height: 250px" :option="LineChart2" :resizable="true"/>
@@ -23,7 +23,7 @@
     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
       <q-card class="" style="background-color: #1e88e5">
         <q-card-section class="text-h6 text-white">
-          Today's User Visit
+          Today's Patient Visit
         </q-card-section>
         <q-card-section class="q-pa-none">
           <IEcharts style="height: 250px" :option="LineChart" :resizable="true"/>

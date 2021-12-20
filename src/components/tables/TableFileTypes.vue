@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         File Types
-        <q-btn label="Create Category" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="fileTypeForm=true"/>
+        <q-btn label="Create File Type" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="fileTypeForm=true"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
