@@ -1,1 +1,9 @@
 /* app global css */
+@font-face {
+  font-family: AVGARDDO;
+  src: url(./AVGARDDO.ttf);
+}
+
+body {
+  font-family: Arial, serif;
+}

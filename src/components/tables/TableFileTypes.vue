@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         File Types
-        <q-btn label="Create File Type" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="fileTypeForm=true"/>
+        <q-btn label="Create File Type" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="openDialog('Create')"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
@@ -25,17 +25,16 @@
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-            <!--            <q-btn icon="edit" size="sm" flat dense @click="fileTypeForm"/>-->
-            <!--            <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense/>-->
+            <q-btn icon="edit" size="sm" flat dense @click="openDialog('Edit', props.row)"/>
+            <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteDialog( props.row)"/>
           </q-td>
         </template>
       </q-table>
-      <q-linear-progress query size="10px"  color="blue" v-if="isLoading"/>
     </q-card-section>
     <q-dialog v-model="fileTypeForm">
       <q-card style="width: 500px; max-width: 100vw; height: 500px; max-height: 100vw;">
         <q-card-section>
-          <h5> Create File Type</h5>
+          <h5> {{fileTypeMethod}} File Type</h5>
           <q-form class="q-gutter-md">
             <q-input
               filled
@@ -87,6 +86,22 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="deleteForm">
+      <q-card>
+        <q-card-section class="row items-center" style="background-color: ghostwhite">
+          <q-avatar icon="delete" color=red text-color="white" />
+          <span class="q-ml-sm" style="color: hotpink;"> Are you sure you want to delete this file type? </span>
+        </q-card-section>
+
+        <q-card-actions align="right" style="background-color: ghostwhite">
+          <q-btn flat label="Cancel" color="red" v-close-popup @click="deleteForm=false"/>
+          <q-btn @click="deleteFileType()" flat label="Delete" color="pink" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-inner-loading :showing="isLoading">
+      <q-spinner-grid size="200px" color="pink" />
+    </q-inner-loading>
   </q-card>
 </template>
 
@@ -97,8 +112,10 @@ export default {
     return {
       data: [],
       fileType: {},
+      fileTypeMethod: null,
       fileTypeForm: false,
       createLoading: false,
+      deleteForm: false,
       isLoading: false,
       filter: '',
       types: null,
@@ -127,42 +144,82 @@ export default {
   },
   computed: {
     computedFileTypes: function() {
-      return this.$store.state.fileTypes.fileTypes ?? [];
+      let result = this.$store.state.fileTypes.fileTypes ?? [];
+
+      return JSON.parse(JSON.stringify(result));
     }
   },
   methods: {
-    createFileType () {
-      this.createLoading = true
-      this.$store.dispatch("fileTypes/add", this.fileType).then(
+    deleteFileType () {
+      this.isLoading = true
+      this.$store.dispatch("fileTypes/deleteFileType",this.fileType).then(
         response => {
-          this.createLoading = false;
 
           if (response.status === 401) {
             this.$router.push("/UsersAdmin");
-          } else if (response.status>201) {
-            this.processError(response.data)
-          }
-          else {
-            this.category = {};
-            this.fileTypeForm = false;
+          } else {
+            this.isLoading = false;
+            this.getFileTypes();
           }
         })
     },
-    getFileTypes () {
-      if (this.computedFileTypes.length === 0) {
-        this.isLoading = true;
+    deleteDialog (fileType) {
+      this.deleteForm = true;
+      this.fileType = fileType
+    },
+    openDialog(method, fileType = {}) {
+      this.fileTypeForm = true;
 
-        this.$store.dispatch("fileTypes/list").then(
+      this.fileType = fileType;
+
+      this.fileTypeMethod = method;
+    },
+    createFileType () {
+      this.createLoading = true
+
+      if (this.fileTypeMethod === 'Create') {
+        this.$store.dispatch("fileTypes/add", this.fileType).then(
           response => {
-            this.isLoading = false;
+            this.createLoading = false;
 
             if (response.status === 401) {
               this.$router.push("/UsersAdmin");
-            } else {
+            } else if (response.status>201) {
+              this.processError(response.data)
+            }
+            else {
+              this.fileTypeForm = false;
+            }
+          })
+      } else {
+        this.$store.dispatch("fileTypes/updateFileType", this.fileType).then(
+          response => {
+            this.createLoading = false;
 
+            if (response.status === 401) {
+              this.$router.push("/UsersAdmin");
+            } else if (response.status>201) {
+              this.processError(response.data)
+            }
+            else {
+              this.fileTypeForm = false;
+              this.getFileTypes();
             }
           })
       }
+
+    },
+    getFileTypes () {
+      this.isLoading = true;
+
+      this.$store.dispatch("fileTypes/list").then(
+        response => {
+          this.isLoading = false;
+
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          }
+        })
     },
     processError (errors) {
       this.errorMessages = [];

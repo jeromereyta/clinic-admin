@@ -492,6 +492,7 @@ export default {
   },
   data () {
     return {
+      apiFileURL: null,
       order : {
         payment_method : null,
         remarks : null,
@@ -524,6 +525,14 @@ export default {
     }
   },
   created () {
+    let apiFileUrl = process.env.API_URL ?? null;
+
+    this.apiFileURL = `https://phplaravel-705740-2336961.cloudwaysapps.com/storage/`;
+
+    if (apiFileUrl !== null) {
+      this.apiFileURL = process.env.API_URL + 'storage/';
+    }
+
     this.getPatientVisit();
     this.getFileTypes();
     this.getProcedures();
@@ -542,7 +551,7 @@ export default {
       return this.patient.files.map(file => {
         return  {
           file_name : file.name,
-          link : 'https://phplaravel-705740-2336961.cloudwaysapps.com/storage/' + file.path,
+          link : this.apiFileURL + file.path,
           file_type_name: file.file_type.name,
           format : file.format
         };

@@ -1,8 +1,6 @@
 import {axiosInstance} from "boot/axios";
 import authHeader from './auth-header';
 
-const API = `http://phplaravel-705740-2336961.cloudwaysapps.com`;
-
 class CategoryProcedureService {
   getList() {
     let options = {headers: authHeader()}
@@ -20,6 +18,30 @@ class CategoryProcedureService {
 
     return axiosInstance
       .post(`category-procedures`, categoryProcedures, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  deleteCategoryProcedure(categoryProcedure) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .delete(`category-procedures/` + categoryProcedure.id, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  updateCategoryProcedure(categoryProcedure) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .put(`category-procedures/` + categoryProcedure.id, categoryProcedure, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {

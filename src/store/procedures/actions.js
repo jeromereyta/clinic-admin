@@ -1,4 +1,5 @@
 import ProcedureService from "src/services/procedure.service";
+import CategoryProcedureService from "src/services/category-procedure.service";
 
 export function list ({commit}) {
   return ProcedureService.getList().then(
@@ -26,4 +27,24 @@ export function add ({commit}, procedure) {
   );
 }
 
+export function deleteProcedure ({commit}, procedure) {
+  return ProcedureService.deleteProcedure(procedure).then(
+    procedure => {
+      return Promise.resolve(procedure);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
 
+export function updateProcedure({commit}, procedure) {
+  return ProcedureService.updateProcedure(procedure).then(
+    procedure => {
+      return Promise.resolve(procedure);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}

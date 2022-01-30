@@ -57,7 +57,7 @@
                   <q-input
                     filled
                     v-model="patient.name"
-                    label="Your name *"
+                    label="Patient Name *"
                     hint="Name and surname"
                     lazy-rules
                     :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -235,10 +235,12 @@ export default {
       step: 1,
       tab: 'info',
       hasInfoUpdate: false,
-      uploadImageModal: false
+      uploadImageModal: false,
+      apiFileURL: null
     }
   },
   created() {
+    this.apiFileURL = process.env.API_URL ?? `https://phplaravel-705740-2336961.cloudwaysapps.com/storage/`;
     const patientCode = this.$route.params.patient_code
     this.fetchPatient(patientCode);
     this.fetchPatientVisits(patientCode);
@@ -367,7 +369,7 @@ export default {
       if (this.patient.profile_picture === null || this.patient.profile_picture === '') {
         this.patient.profile = 'https://www.pngitem.com/pimgs/m/111-1114675_user-login-person-man-enter-person-login-icon.png';
       } else {
-        this.patient.profile = 'https://phplaravel-705740-2336961.cloudwaysapps.com/' + this.patient.profile_picture;
+        this.patient.profile = this.apiFileURL + this.patient.profile_picture;
       }
       console.log(this.patient.profile)
       this.originalDataPatient = JSON.parse(JSON.stringify(this.patient));

@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         Procedure List
-        <q-btn label="Create Procedure" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="procedureForm=true"/>
+        <q-btn label="Create Procedure" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="openDialog('Create')"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
@@ -25,17 +25,16 @@
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-<!--            <q-btn icon="edit" size="sm" flat dense @click="procedureForm"/>-->
-<!--            <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense/>-->
+            <q-btn icon="edit" size="sm" flat dense @click="openDialog('Edit', props.row)"/>
+            <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteDialog( props.row)"/>
           </q-td>
         </template>
       </q-table>
-      <q-linear-progress query size="10px"  color="blue" v-if="isLoading"/>
     </q-card-section>
     <q-dialog v-model="procedureForm">
       <q-card style="width: 500px; max-width: 100vw; height: 500px; max-height: 100vw;">
         <q-card-section>
-          <h5> Create Procedure</h5>
+          <h5> {{procedureMethod}} Procedure</h5>
           <q-form class="q-gutter-md">
             <q-input
               filled
@@ -98,6 +97,22 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="deleteForm">
+      <q-card>
+        <q-card-section class="row items-center" style="background-color: ghostwhite">
+          <q-avatar icon="delete" color=red text-color="white" />
+          <span class="q-ml-sm" style="color: hotpink;"> Are you sure you want to delete this procedure? </span>
+        </q-card-section>
+
+        <q-card-actions align="right" style="background-color: ghostwhite">
+          <q-btn flat label="Cancel" color="red" v-close-popup @click="deleteForm=false"/>
+          <q-btn @click="deleteProcedure()" flat label="Delete" color="pink" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-inner-loading :showing="isLoading">
+      <q-spinner-grid size="200px" color="pink" />
+    </q-inner-loading>
   </q-card>
 </template>
 
@@ -112,6 +127,8 @@ export default {
       },
       procedureForm: false,
       createLoading: false,
+      deleteForm: false,
+      procedureMethod: null,
       error: false,
       errorMessages: [],
       isLoading: false,
@@ -139,7 +156,8 @@ export default {
   },
   computed: {
     computedProcedures: function() {
-      return this.$store.state.procedures.procedures.map(procedure => {
+      this.isLoading = true;
+      let result = this.$store.state.procedures.procedures.map(procedure => {
         let category = this.computedCategories.find(category => category.id === procedure.category_procedure_id);
 
         if (category !== undefined) {
@@ -148,61 +166,102 @@ export default {
 
         return procedure
       }) ?? [];
+
+      this.isLoading = false;
+
+      return JSON.parse(JSON.stringify(result))
     },
     computedCategories: function() {
       return this.$store.state.categoryProcedures.categoryProcedures ?? [];
     }
   },
   methods: {
-    createProcedure () {
-      this.createLoading = true
-
-      this.procedure.category_procedure_id = this.procedure.selected_category.id;
-
-      this.$store.dispatch("procedures/add", this.procedure).then(
+    deleteProcedure () {
+      this.isLoading = true
+      this.$store.dispatch("procedures/deleteProcedure",this.procedure).then(
         response => {
-          this.createLoading = false;
 
           if (response.status === 401) {
             this.$router.push("/UsersAdmin");
-          } else if (response.status > 200) {
-            this.processError(response.data)
           } else {
-            this.category = {};
-            this.procedureForm = false;
+            this.isLoading = false;
+            this.getProcedures();
           }
         })
     },
+    deleteDialog (procedure) {
+      this.deleteForm = true;
+      this.procedure = procedure
+    },
+    openDialog(method, procedure = null) {
+      this.procedureForm = true;
+
+      if (procedure !== null) {
+        procedure.selected_category = this.computedCategories.find(category => category.id === procedure.category_procedure_id);
+      }
+
+      this.procedure = procedure ?? {
+        selected_category: null
+      };
+
+      this.procedureMethod = method;
+    },
+    createProcedure () {
+      this.createLoading = true
+
+      if (this.procedureMethod === 'Create') {
+        this.procedure.category_procedure_id = this.procedure.selected_category.id;
+
+        this.$store.dispatch("procedures/add", this.procedure).then(
+          response => {
+            this.createLoading = false;
+
+            if (response.status === 401) {
+              this.$router.push("/UsersAdmin");
+            } else if (response.status > 200) {
+              this.processError(response.data)
+            } else {
+              this.procedureForm = false;
+            }
+          })
+      } else {
+        this.$store.dispatch("procedures/updateProcedure", this.procedure).then(
+          response => {
+            this.createLoading = false;
+
+            if (response.status === 401) {
+              this.$router.push("/UsersAdmin");
+            } else if (response.status > 200) {
+              this.processError(response.data)
+            } else {
+              this.getProcedures()
+              this.procedureForm = false;
+            }
+          })
+      }
+    },
     getProcedures () {
-      if (this.computedProcedures.length === 0) {
-        this.isLoading = true;
+      this.isLoading = true;
 
-        this.$store.dispatch("procedures/list").then(
-          response => {
-            this.isLoading = false;
+      this.$store.dispatch("procedures/list").then(
+        response => {
+          this.isLoading = false;
 
-            if (response.status === 401) {
-              this.$router.push("/UsersAdmin");
-            } else {
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          }
+        })
 
-            }
-          })
-      }
+      this.isLoading = true;
 
-      if (this.computedCategories.length === 0) {
-        this.isLoading = true;
+      this.$store.dispatch("categoryProcedures/list").then(
+        response => {
+          this.isLoading = false;
 
-        this.$store.dispatch("categoryProcedures/list").then(
-          response => {
-            this.isLoading = false;
-
-            if (response.status === 401) {
-              this.$router.push("/UsersAdmin");
-            } else {
-
-            }
-          })
-      }
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          }
+        })
     },
     processError (errors) {
       this.errorMessages = [];

@@ -26,10 +26,45 @@
             </template>
             <template v-slot:body-cell-Action="props">
               <q-td :props="props">
-                <q-btn @click="confirmUpdateQueue(props.row, 'on going')" v-if="props.row.queue_number===1 && props.row.status !== 'In Progress'" label="Process" color="pink" icon="edit" size="sm" flat dense/>
-                <q-btn @click="confirmUpdateQueue(props.row, 'cancelled')" label="Cancel" icon="delete" size="sm" class="q-ml-sm" flat dense color="red"/>
-                <q-btn @click="confirmUpdateQueue(props.row, 'completed')" v-if="props.row.status === 'In Progress'" label="Done" icon="task_alt" size="sm" class="q-ml-sm" color="green" flat dense/>
-                <q-btn @click="confirmUpdateQueue(props.row, 'move one down in line')" v-if="props.row.queue_number===1 && props.row.status !== 'In Progress'" label="Move Down" icon="arrow_downward" color="blue" size="sm" class="q-ml-sm" flat dense/>
+                <q-btn
+                  @click="confirmUpdateQueue(props.row, 'on going')"
+                  v-if="props.row.queue_number===1 && props.row.status !== 'In Progress'"
+                  label="Process"
+                  color="pink"
+                  icon="edit"
+                  size="sm"
+                  flat
+                  dense/>
+                <q-btn
+                  @click="confirmUpdateQueue(props.row, 'cancelled')"
+                  label="Cancel"
+                  icon="delete"
+                  size="sm"
+                  class="q-ml-sm"
+                  flat
+                  dense
+                  color="red"
+                />
+                <q-btn
+                  @click="confirmUpdateQueue(props.row, 'completed')"
+                  v-if="props.row.status === 'In Progress'"
+                  label="Done"
+                  icon="task_alt"
+                  size="sm"
+                  class="q-ml-sm"
+                  color="green"
+                  flat
+                  dense/>
+                <q-btn
+                  @click="confirmUpdateQueue(props.row, 'move one down in line')"
+                  v-if="props.row.queue_number===1 && props.row.status !== 'In Progress'"
+                  label="Move Down"
+                  icon="arrow_downward"
+                  color="blue"
+                  size="sm"
+                  class="q-ml-sm"
+                  flat
+                  dense/>
               </q-td>
             </template>
           </q-table>
@@ -131,8 +166,9 @@ export default {
     },
     updateQueue (procedureQueue, status) {
       this.updateLoading = true;
+      this.procedureOptions = [];
 
-    let statusUpdate = 'In Queue';
+      let statusUpdate = 'In Queue';
 
       if (this.selectedStatus === 'on going') {
         statusUpdate = 'In Progress';

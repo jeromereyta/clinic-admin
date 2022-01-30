@@ -25,3 +25,25 @@ export function add ({commit}, categoryProcedure) {
     }
   );
 }
+
+export function deleteCategoryProcedure ({commit}, categoryProcedure) {
+  return CategoryProcedureService.deleteCategoryProcedure(categoryProcedure).then(
+    categoryProcedure => {
+      return Promise.resolve(categoryProcedure);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
+
+export function updateCategoryProcedure ({commit}, categoryProcedure) {
+    return CategoryProcedureService.updateCategoryProcedure(categoryProcedure).then(
+      categoryProcedure => {
+        return Promise.resolve(categoryProcedure);
+      },
+      error => {
+        return Promise.reject(error);
+      }
+    );
+}

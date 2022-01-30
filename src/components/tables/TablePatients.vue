@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         Patient List
-        <q-btn label="Admit Patient" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="patientView=true"/>
+        <q-btn label="Admit Patient" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="newPatient()"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
@@ -49,7 +49,7 @@
               <q-input
                 filled
                 v-model="user_details.name"
-                label="Your name *"
+                label="Patient Name *"
                 hint="Name and surname"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -259,6 +259,7 @@ export default {
           sortable: true
         },
         {name: 'email', label: 'Email', field: 'email', align: 'left'},
+        {name: 'mobile_number', label: 'Mobile #', field: 'mobile_number', align: 'left'},
         {name: 'gender', label: 'Gender', field: 'gender', align: 'left'},
         {name: 'age', label: 'Age', field: 'age', align: 'left'},
         {name: 'created_at', label: 'Date Created', field: 'created_at', align: 'left'},
@@ -276,6 +277,9 @@ export default {
     }
   },
   methods: {
+    newPatient () {
+      this.$router.push({ name: 'admit-patient' })
+    },
     cancel () {
       this.user_details = {};
       this.step = 1;

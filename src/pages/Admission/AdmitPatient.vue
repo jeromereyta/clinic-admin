@@ -1,155 +1,44 @@
 <template>
   <q-page>
     <q-card>
-      <q-stepper
-        v-model="step"
-        ref="stepper"
-        color="primary"
-        animated
-      >
-        <q-step
-          color="green"
-          :name="1"
-          title="Patient Information"
-          icon="settings"
-          :done="step > 1"
-        >
-          <div class="text-h6 text-grey-8">
-            Patient Details
-          </div>
-          <q-card-section>
-            <q-form class="q-gutter-md">
+      <PatientProfileCard v-if="!patientInfoDisabled" :patient="user_details" :is-loading="isLoading"></PatientProfileCard>
+      <q-separator />
+      <div class="text-h6 text-grey-8">
+        Patient Visit Logs
+      </div>
+
+      <q-card-section>
+        <q-list class="row" v-if="patientInfoDisabled">
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
+                disable
                 filled
-                :disable="patientInfoDisabled"
+                v-model="user_details.id"
+                label="Patient ID"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']"
+              />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
+              <q-input
+                disable
+                filled
                 v-model="user_details.name"
-                label="Your name *"
-                hint="Name and surname"
+                label="Patient Name"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.email"
-                label="Your email *"
-                hint="Example: johndoe@gmail.com"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <div class="row">
-                <div class="block" style="margin-right: 9%; width: 30%">
-                  <q-select
-                    :disable="patientInfoDisabled"
-                    v-model="user_details.gender"
-                    :options="genders"
-                    label="Gender *" />
-                </div>
-                <div class="block" style="margin-right: 9%; width: 30%">
-                  <q-input :disable="patientInfoDisabled" filled v-model="user_details.birth_date" mask="date" :rules="['date']"   label="Birthdate *">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="user_details.birth_date" :disable="patientInfoDisabled">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.civil_status"
-                label="Civil Status *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.phone_number"
-                label="Phone Number *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.mobile_number"
-                label="Mobile Number *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-form>
-          </q-card-section>
-        </q-step>
+            </q-item-section>
+          </q-item>
+        </q-list>
 
-        <q-step
-          color="blue"
-          :name="2"
-          title="Patient Address"
-          icon="home"
-          :done="step > 2"
-        >
-          <div class="text-h6 text-grey-8">
-            Patient Address
-          </div>
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.street_address"
-                label="Street Address *"
-                hint="#14 unit 421 Tiny Street"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.barangay"
-                label="Barangay *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.city"
-                label="City *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-              <q-input
-                filled
-                :disable="patientInfoDisabled"
-                v-model="user_details.province"
-                label="Province *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-form>
-          </q-card-section>
-        </q-step>
+        <q-list class="row">
 
-        <q-step
-          color="yellow"
-          :name="3"
-          title="Patient Initial Visit Checkup"
-          icon="fact_check"
-          :done="step > 3"
-        >
-          <div class="text-h6 text-grey-8">
-            Patient Visit Logs
-          </div>
-          <q-card-section>
-            <q-form class="q-gutter-md">
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
@@ -158,6 +47,10 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
@@ -166,6 +59,10 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
@@ -174,6 +71,10 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
@@ -182,6 +83,10 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
@@ -190,51 +95,14 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
-            </q-form>
-          </q-card-section>
-        </q-step>
-
-<!--        <q-step-->
-<!--          color="blue"-->
-<!--          :name="4"-->
-<!--          title="Upload Files"-->
-<!--          icon="file_upload"-->
-<!--          :done="step > 4"-->
-<!--        >-->
-<!--          <div class="text-h6 text-grey-8">-->
-<!--            Uploaded Files-->
-<!--          </div>-->
-<!--          <q-card-section>-->
-<!--            <q-form class="q-gutter-md">-->
-
-<!--            </q-form>-->
-<!--          </q-card-section>-->
-<!--        </q-step>-->
-
-<!--        <q-step-->
-<!--          color="red"-->
-<!--          :name="5"-->
-<!--          title="Procedures"-->
-<!--          icon="fact_check"-->
-<!--          :done="step > 4"-->
-<!--        >-->
-<!--          <div class="text-h6 text-grey-8">-->
-<!--            Procedures-->
-<!--          </div>-->
-<!--          <q-card-section>-->
-<!--            <q-form class="q-gutter-md">-->
-
-<!--            </q-form>-->
-<!--          </q-card-section>-->
-<!--        </q-step>-->
-        <template v-slot:navigation>
-          <q-stepper-navigation>
-            <q-btn @click="proceed()" color="primary" :label="step === 3 ? 'Admit Patient' : 'Continue'" />
-            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
-            <q-btn style="float: right" @click="$router.push('/')" flat color="red" label="Back to Homepage" class="q-ml-sm"/>
-          </q-stepper-navigation>
-        </template>
-      </q-stepper>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-card-section>
+      <q-card-actions align="right">
+          <q-btn style="float: right; margin-right: 10px;" @click="proceed()" color="blue" label="Admit Patient" class="q-ml-sm" />
+          <q-btn style="float: left" @click="$router.push('/')" flat color="red" label="Back to Homepage" class="q-ml-sm"/>
+      </q-card-actions>
       <q-inner-loading :showing="isLoading">
         <q-spinner-grid size="200px" color="pink" />
       </q-inner-loading>
@@ -287,6 +155,9 @@
 <script>
 export default {
   name: "AdmitPatient",
+  components : {
+    PatientProfileCard: () => import('../../components/Paitient/PatientProfileCard'),
+  },
   data () {
     return {
       errorMessages : [],
@@ -299,7 +170,7 @@ export default {
       patientVisitInfoDisabled: false,
       patient_visit : {},
       selectedPatient : null,
-      step : 1,
+      step : 3,
       user_details : {
         birth_date : '1990/01/01'
       },

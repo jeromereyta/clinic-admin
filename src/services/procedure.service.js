@@ -26,6 +26,32 @@ class ProcedureService {
         return error.response;
       });
   }
+
+
+  deleteProcedure(procedure) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .delete(`procedures/` + procedure.id, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  updateProcedure(procedure) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .put(`procedures/` + procedure.id, procedure, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
 }
 
 export default new ProcedureService();

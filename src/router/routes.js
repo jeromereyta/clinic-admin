@@ -32,7 +32,7 @@ const routes = [
       },
       {
         path: '/Patient/:patient_code',
-        component: () => import('pages/Patients/Patient.vue'),
+        component: () => import('pages/Patients/Patient2.vue'),
         name: 'patient',
       },
       {
