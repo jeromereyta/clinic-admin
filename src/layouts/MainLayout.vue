@@ -122,6 +122,14 @@
                 <q-item-label>Categories of Procedure</q-item-label>
               </q-item-section>
             </q-item>
+            <q-item to="/Packages" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar>
+                <q-icon name="note_add"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Packages</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-item to="/Procedures" active-class="q-item-no-link-highlighting">
               <q-item-section avatar>
                 <q-icon name="integration_instructions"/>

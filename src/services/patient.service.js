@@ -85,6 +85,18 @@ class PatientService {
       });
   }
 
+  createPatientPackage(packageData) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .post(`patient-package-procedures`, packageData, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
   getPatientQueues() {
     let options = {headers: authHeader()}
     return axiosInstance
@@ -166,6 +178,18 @@ class PatientService {
 
     return axiosInstance
       .put(`procedures-queues`, procedureQueue, options)
+      .then(response => {
+        return response.data;
+      }).catch(function(error) {
+        return error.response;
+      });
+  }
+
+  deleteProcedure(patient_procedure_id) {
+    let options = {headers: authHeader()}
+
+    return axiosInstance
+      .delete(`patient-procedure/` + patient_procedure_id, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {

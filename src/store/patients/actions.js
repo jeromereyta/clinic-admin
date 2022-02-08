@@ -1,4 +1,5 @@
 import PatientService from '../../services/patient.service';
+import ProcedureService from "src/services/procedure.service";
 
 export function list({commit}) {
   return PatientService.getList({commit}).then(
@@ -105,6 +106,17 @@ export function addPatientProcedure({commit}, patientProcedure) {
   );
 }
 
+export function addPatientPackage({commit}, packageData) {
+  return PatientService.createPatientPackage(packageData).then(
+    packageData => {
+      return Promise.resolve(packageData);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}
+
 export function patientVisitsByPatient({commit}, patientCode) {
   return PatientService.getPatientVisitsByPatient(patientCode).then(
     patientVisits => {
@@ -138,3 +150,14 @@ export function createPatientTransaction({commit}, transaction) {
   );
 }
 
+
+export function deleteProcedure ({commit}, patient_procedure_id) {
+  return PatientService.deleteProcedure(patient_procedure_id).then(
+    procedure => {
+      return Promise.resolve(procedure);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}

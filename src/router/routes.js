@@ -43,6 +43,7 @@ const routes = [
       {path: '/CategoryProcedures',component: () => import('pages/Settings/CategoryProcedures.vue')},
       {path: '/Procedures',component: () => import('pages/Settings/Procedures.vue')},
       {path: '/FileTypes',component: () => import('pages/Settings/FileTypes.vue')},
+      {path: '/Packages',component: () => import('pages/Settings/Packages.vue')},
     ]
   },
   {

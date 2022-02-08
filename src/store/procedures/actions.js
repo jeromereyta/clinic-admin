@@ -48,3 +48,16 @@ export function updateProcedure({commit}, procedure) {
     }
   );
 }
+
+
+export function packageList ({commit}) {
+  return ProcedureService.getPackageList().then(
+    packages => {
+      commit('fetchPackages', packages.data)
+      return Promise.resolve(packages);
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+}

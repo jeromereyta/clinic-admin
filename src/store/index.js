@@ -7,6 +7,7 @@ import fileTypes from './file-types'
 import patients from './patients'
 import procedures from './procedures'
 import queues from './queues'
+import packages from './package'
 
 
 Vue.use(Vuex)
@@ -28,7 +29,8 @@ export default function (/* { ssrContext } */) {
       fileTypes,
       patients,
       procedures,
-      queues
+      queues,
+      packages
     },
 
     // enable strict mode (adds overhead!)

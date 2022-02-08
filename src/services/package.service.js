@@ -3,7 +3,7 @@ import authHeader from './auth-header';
 
 const API = `http://phplaravel-705740-2336961.cloudwaysapps.com`;
 
-class ProcedureService {
+class PackageService {
   getPackageList() {
     let options = {headers: authHeader()}
     return axiosInstance
@@ -18,7 +18,7 @@ class ProcedureService {
   getList() {
     let options = {headers: authHeader()}
     return axiosInstance
-      .get(`procedures`, options)
+      .get(`packages`, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {
@@ -26,11 +26,11 @@ class ProcedureService {
       });
   }
 
-  createProcedure(procedure) {
+  createPackage(packageData) {
     let options = {headers: authHeader()}
 
     return axiosInstance
-      .post(`procedures`, procedure, options)
+      .post(`packages`, packageData, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {
@@ -39,11 +39,11 @@ class ProcedureService {
   }
 
 
-  deleteProcedure(procedure) {
+  deletePackage(packageData) {
     let options = {headers: authHeader()}
 
     return axiosInstance
-      .delete(`procedures/` + procedure.id, options)
+      .delete(`packages/` + packageData.id, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {
@@ -51,18 +51,17 @@ class ProcedureService {
       });
   }
 
-  updateProcedure(procedure) {
+  updatePackage(packageData) {
     let options = {headers: authHeader()}
 
     return axiosInstance
-      .put(`procedures/` + procedure.id, procedure, options)
+      .put(`packages/` + packageData.id, packageData, options)
       .then(response => {
         return response.data;
       }).catch(function(error) {
         return error.response;
       });
   }
-
 }
 
-export default new ProcedureService();
+export default new PackageService();

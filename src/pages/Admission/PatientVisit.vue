@@ -84,9 +84,10 @@
             :header-nav="step > 3"
           >
               <q-card-section>
-                <table-patient-procedures :procedures="procedures" ></table-patient-procedures>
+                <table-patient-procedures :procedures="procedures"  :show-package="true" @delete-procedure="deleteProcedure"></table-patient-procedures>
               </q-card-section>
             <q-stepper-navigation>
+              <q-btn v-if="!inQueue && !isPast" style="float: left" label="Add Package" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openPackageModel()"/>
               <q-btn v-if="!inQueue && !isPast" style="float: left" label="Add Procedures" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openProcedureModal()"/>
               <q-btn rounded @click="() => { done2 = true; step = 4 }" class="float-right q-mr-md q-mb-md" color="blue"
                      label="Next"/>
@@ -281,6 +282,51 @@
         <q-card-actions align="right" class="bg-white text-teal">
           <q-btn flat label="OK" v-close-popup />
         </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="packageModal" transition-show="scale">
+      <q-card style="max-width: 650px; max-height: 650px;">
+        <q-card-section style="margin-top: 10px">
+          <div class="text-subtitle1">
+            Add Package
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            label="Select Package"
+            filled
+            v-model="selectedPackage"
+            clearable
+            :options="packagesOptionsComputed"
+            option-label="name"
+            style="width: 400px; padding-bottom: 32px"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No results
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <table-patient-procedures :procedures="selectedPackageProcedures" ></table-patient-procedures>
+          <q-input
+            style="margin-top: 15px;"
+            filled
+            disable
+            v-model="packageTotalPrice"
+            label="Price"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type something']"
+          />
+        </q-card-section>
+        <q-card-actions>
+          <q-btn style="float: left" @click="submitPackageProcedure()" flat color="blue" label="Submit" class="q-ml-sm" v-if="selectedPackage !== null"/>
+          <q-btn style="float: left" @click="packageModal=false" flat color="red" label="Cancel" class="q-ml-sm"/>
+        </q-card-actions>
+        <q-inner-loading :showing="isLoading">
+          <q-spinner-grid size="200px" color="pink" />
+        </q-inner-loading>
       </q-card>
     </q-dialog>
     <q-dialog v-model="procedureModal" transition-show="scale">
@@ -507,11 +553,15 @@ export default {
       filesData : [],
       file: null,
       description : null,
+      packageModal : false,
       patient : {
         files : [],
       },
+      packages : [],
+      selectedPackage :null,
+      packageTotalPrice: 0,
+      selectedPackageProcedures: [],
       patientError : false,
-      procedureOptions: [],
       errorMessages : [],
       step: 1,
       address_detail: {},
@@ -535,6 +585,7 @@ export default {
 
     this.getPatientVisit();
     this.getFileTypes();
+    this.getPackages();
     this.getProcedures();
   },
   watch: {
@@ -543,6 +594,20 @@ export default {
         this.totalPrice = 0;
       } else {
         this.totalPrice = this.selectedProcedure.price
+      }
+    },
+    selectedPackage : function () {
+      if (this.selectedPackage === null) {
+        this.selectedPackageProcedures = [];
+        this.packageTotalPrice = 0;
+      } else {
+        let totalPrice = 0;
+
+        this.selectedPackage.procedures.forEach(procedure => {
+          totalPrice = totalPrice + parseFloat(procedure.price);
+        });
+        this.selectedPackageProcedures = this.selectedPackage.procedures;
+        this.packageTotalPrice = totalPrice;
       }
     }
   },
@@ -559,6 +624,15 @@ export default {
     },
     procedures : function () {
       return this.patient.procedures;
+    },
+    packagesOptionsComputed: function () {
+      let packages = this.$store.state.procedures?.packages ?? [];
+
+      return packages.map(packageData => {
+        packageData.label = packageData.name;
+        packageData.value = packageData.id;
+        return packageData;
+      });
     },
     proceduresOptionsComputed: function () {
       let procedures = this.$store.state.procedures?.procedures ?? [];
@@ -585,6 +659,9 @@ export default {
     }
   },
   methods: {
+    openPackageModel(){
+      this.packageModal = true;
+    },
     generateReport () {
       this.$refs.html2Pdf.generatePdf()
     },
@@ -655,6 +732,20 @@ export default {
       } catch (e) {
       }
     },
+    getPackages () {
+      this.isLoading = true;
+
+      this.$store.dispatch("procedures/packageList").then(
+        response => {
+          this.isLoading = false;
+
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          } else {
+
+          }
+        })
+    },
     getProcedures () {
       this.isLoading = true;
 
@@ -676,13 +767,7 @@ export default {
       this.uploadFileModal = true;
     },
     processError (errors) {
-      for (let key in errors) {
-        let errorObject = errors[key]
-
-        for (let index in errorObject) {
-          this.errorMessages.push(errorObject[index]);
-        }
-      }
+      this.errorMessages.push(errors.data.message)
       this.patientError = true;
     },
     submitPatientTransaction () {
@@ -703,6 +788,45 @@ export default {
 
           } else if (response.status > 200) {
             this.isLoading = false;
+            this.processError(response.data)
+          } else {
+            this.getPatientVisit()
+          }
+        })
+    },
+    submitPackageProcedure () {
+      const patientPackage = {
+        patient_visit_id: this.$route.params.patient_visit_id,
+        package_id :  this.selectedPackage.id
+      };
+
+      this.isLoading = true;
+      this.errorMessages = [];
+
+      this.$store.dispatch("patients/addPatientPackage", patientPackage).then(
+        response => {
+
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          } else if (response.status > 204) {
+            this.isLoading = false;
+            this.processError(response.data)
+          } else {
+            this.packageModal = false;
+            this.getPatientVisit()
+            this.description = null;
+            this.selectedPackage = null;
+          }
+        })
+    },
+    deleteProcedure (patient_procedure_id) {
+      this.isLoading = true;
+      this.$store.dispatch("patients/deleteProcedure",patient_procedure_id).then(
+        response => {
+
+          if (response.status === 401) {
+            this.$router.push("/UsersAdmin");
+          } else if (response.status > 204) {
             this.processError(response.data)
           } else {
             this.getPatientVisit()
