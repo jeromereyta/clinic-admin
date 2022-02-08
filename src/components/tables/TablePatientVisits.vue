@@ -475,7 +475,8 @@ export default {
   },
   computed: {
     patientVisitsComputed: function () {
-      return this.$store.state.patients.patientVisits.map(patientVisit => {
+      let patientVisits = this.$store.state.patients?.patientVisits ?? [];
+      return patientVisits.map(patientVisit => {
         patientVisit.status = patientVisit.has_queue === false ? 'Not paid/ Not yet placed' : 'Paid / In Queue';
         return patientVisit;
       })
