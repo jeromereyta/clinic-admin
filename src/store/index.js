@@ -8,6 +8,7 @@ import patients from './patients'
 import procedures from './procedures'
 import queues from './queues'
 import packages from './package'
+import transactions from './transactions'
 
 
 Vue.use(Vuex)
@@ -30,7 +31,8 @@ export default function (/* { ssrContext } */) {
       patients,
       procedures,
       queues,
-      packages
+      packages,
+      transactions
     },
 
     // enable strict mode (adds overhead!)

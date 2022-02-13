@@ -25,7 +25,7 @@
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
             <q-btn
-              icon="event_available"
+              icon="visibility"
               size="sm"
               flat
               dense
@@ -477,7 +477,7 @@ export default {
     patientVisitsComputed: function () {
       let patientVisits = this.$store.state.patients?.patientVisits ?? [];
       return patientVisits.map(patientVisit => {
-        patientVisit.status = patientVisit.has_queue === false ? 'Not paid/ Not yet placed' : 'Paid / In Queue';
+        patientVisit.status = patientVisit.has_queue === false ? 'Not paid' : 'Paid';
         return patientVisit;
       })
     },

@@ -32,7 +32,6 @@
                 v-model="password"
                 label="Password"
                 lazy-rules
-
               />
 
               <div>
@@ -78,10 +77,10 @@
               password: this.password,
             }
 
-            this.$store.dispatch("auth/login", data).then(
-              () => {
+            this.$store.dispatch("auth/login", data).
+            then(() => {
                 this.isLoading = false;
-                this.$router.push("/");
+                this.$router.push({ name: 'dashboard' })
               },
               (error) => {
                 this.isLoading = false;

@@ -135,6 +135,7 @@ export default {
       filter: '',
       show_filter: false,
       columns: [
+        {name: 'patient_procedure_id', label: 'Patient Procedure ID', field: 'patient_procedure_id', sortable: true, align: 'left'},
         {name: 'id', label: 'ID', field: 'id', sortable: true, align: 'left'},
         {
           name: 'name',

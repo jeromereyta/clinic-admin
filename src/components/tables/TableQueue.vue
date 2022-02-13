@@ -114,6 +114,7 @@ export default {
       columns: [
         {name: 'queue_number', align: 'left', label: 'Queue #', field: 'queue_number', sortable: true},
         {name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true},
+        {name: 'patient_procedure_id', label: 'Patient Procedure ID', field: 'patient_procedure_id', align: 'left'},
         {name: 'patient_name', align: 'left', label: 'Patient Name', field: 'patient_name', sortable: true},
         {name: 'patient_code', align: 'left', label: 'Patient Code', field: 'patient_code', sortable: true},
         {name: 'Action', label: 'Action', field: 'Action', sortable: false, align: 'center'}

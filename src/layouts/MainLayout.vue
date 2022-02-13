@@ -38,6 +38,14 @@
             <q-item-label>Dashboard</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item to="/Transactions" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="account_balance"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Transactions</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item to="/Queue" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="queue_play_next"/>

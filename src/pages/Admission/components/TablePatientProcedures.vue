@@ -60,6 +60,8 @@ export default {
     },
     computedOptions: function () {
       let columns = [
+          {name: 'status', label: 'Status', field: 'status', align: 'left'},
+          {name: 'patient_procedure_id', label: 'Patient Procedure ID', field: 'patient_procedure_id', align: 'left'},
           {name: 'name', label: 'Procedure Name', field: 'name', align: 'left'},
           {name: 'description', label: 'Description', field: 'description', align: 'left'},
           {name: 'patient_procedure_description', label: 'Note', field: 'patient_procedure_description', align: 'left'},

@@ -84,7 +84,7 @@
             :header-nav="step > 3"
           >
               <q-card-section>
-                <table-patient-procedures :procedures="procedures"  :show-package="true" @delete-procedure="deleteProcedure"></table-patient-procedures>
+                <table-patient-procedures :procedures="procedures"  :show-package="this.order === null" @delete-procedure="deleteProcedure"></table-patient-procedures>
               </q-card-section>
             <q-stepper-navigation>
               <q-btn v-if="!inQueue && !isPast" style="float: left" label="Add Package" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openPackageModel()"/>
@@ -126,7 +126,18 @@
             <q-card-section horizontal>
                 <q-card-section class="col-7 q-pt-xs">
                   <q-item-label header class="text-h6">Payment Summary</q-item-label>
-
+                  <div class="row" v-if="order.transaction_code !== null">
+                    <div class="col-3">
+                      <q-item>
+                        <div class="text-subtitle1" style="max-width: 200px;">Transaction Code: </div>
+                      </q-item>
+                    </div>
+                    <div class="col-6">
+                      <q-item>
+                        <q-input disable dense outlined class="full-width" v-model="order.transaction_code"/>
+                      </q-item>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-3">
                       <q-item>
@@ -432,7 +443,19 @@
               <div class="row">
                 <div class="col-4">
                   <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Patient Name: </div>
+                    <div class="text-subtitle1" style="max-width: 210px;">Transaction Code#</div>
+                  </q-item>
+                </div>
+                <div class="col-6">
+                  <q-item>
+                    {{order.transaction_code}}
+                  </q-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <q-item>
+                    <div class="text-subtitle1" style="max-width: 220px;">Patient Name: </div>
                   </q-item>
                 </div>
                 <div class="col-6">
@@ -540,6 +563,7 @@ export default {
     return {
       apiFileURL: null,
       order : {
+        transaction_code: null,
         payment_method : null,
         remarks : null,
       },
@@ -687,7 +711,8 @@ export default {
                   if (this.patient.total_summary !== null) {
                     this.inQueue = true;
                     this.order.remarks = this.patient.total_summary.remarks ?? ''
-                    this.order.payment_method = this.patient.total_summary.paymentMethod
+                    this.order.payment_method = this.patient.total_summary.payment_method
+                    this.order.transaction_code = this.patient.total_summary.transaction_code
                     this.step = 4;
                   } else {
                     this.inQueue = false;
