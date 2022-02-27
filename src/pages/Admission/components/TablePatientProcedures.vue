@@ -61,15 +61,15 @@ export default {
     computedOptions: function () {
       let columns = [
           {name: 'status', label: 'Status', field: 'status', align: 'left'},
-          {name: 'patient_procedure_id', label: 'Patient Procedure ID', field: 'patient_procedure_id', align: 'left'},
           {name: 'name', label: 'Procedure Name', field: 'name', align: 'left'},
           {name: 'description', label: 'Description', field: 'description', align: 'left'},
+          {name: 'patient_procedure_id', label: 'Patient Procedure ID', field: 'patient_procedure_id', align: 'left'},
           {name: 'patient_procedure_description', label: 'Note', field: 'patient_procedure_description', align: 'left'},
           {name: 'price', label: 'Price', field: 'price', align: 'left'},
         ];
 
       if (this.showPackage === true) {
-        columns.push({
+        columns.splice(0,0, {
           name: 'package_name', label: 'Package Name', field: 'package_name', align: 'left'
         });
 

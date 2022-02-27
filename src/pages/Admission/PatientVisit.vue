@@ -84,7 +84,7 @@
             :header-nav="step > 3"
           >
               <q-card-section>
-                <table-patient-procedures :procedures="procedures"  :show-package="this.order === null" @delete-procedure="deleteProcedure"></table-patient-procedures>
+                <table-patient-procedures :procedures="procedures"  :show-package="this.computedOrder === null" @delete-procedure="deleteProcedure"></table-patient-procedures>
               </q-card-section>
             <q-stepper-navigation>
               <q-btn v-if="!inQueue && !isPast" style="float: left" label="Add Package" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="openPackageModel()"/>
@@ -636,6 +636,9 @@ export default {
     }
   },
   computed : {
+    computedOrder: function () {
+      return this.order?.transaction_code !== null ? this.order : null;
+    },
     files : function () {
       return this.patient.files.map(file => {
         return  {

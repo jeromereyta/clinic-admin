@@ -138,7 +138,7 @@
         <q-card class="bg-white text-pink-4" style="width: 600px">
           <q-card-section>
             <div class="text-h6">
-              Patient information being creating
+              Patient information being created.
             </div>
             <q-spinner-grid
               color="pink"
@@ -262,19 +262,7 @@ export default {
         })
     },
     proceed () {
-      if (this.step === 3) {
-        let patientVisitId = this.patient_visit.id ?? null;
-
-        if (patientVisitId === null) {
-          this.createPatientOrVisit()
-        } else {
-          this.$refs.stepper.next()
-        }
-      }
-      else if (this.step !== 5) {
-        this.$refs.stepper.next()
-      }
-
+      this.createPatientOrVisit()
     },
     processError (errors) {
       for (let key in errors) {
