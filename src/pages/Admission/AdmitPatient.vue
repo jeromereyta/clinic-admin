@@ -26,8 +26,32 @@
               <q-input
                 disable
                 filled
-                v-model="user_details.name"
-                label="Patient Name"
+                v-model="user_details.first_name"
+                label="First Name"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']"
+              />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
+              <q-input
+                disable
+                filled
+                v-model="user_details.middle_name"
+                label="Middle Name"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']"
+              />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-item-section>
+              <q-input
+                disable
+                filled
+                v-model="user_details.last_name"
+                label="Last Name"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
