@@ -664,6 +664,10 @@ export default {
     proceduresOptionsComputed: function () {
       let procedures = this.$store.state.procedures?.procedures ?? [];
 
+      if (procedures.length === 0) {
+        return []
+      }
+
       return procedures.map(procedure => {
         procedure.label = procedure.name;
         procedure.value = procedure.id;

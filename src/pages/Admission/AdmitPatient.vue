@@ -6,70 +6,15 @@
       <div class="text-h6 text-grey-8">
         Patient Visit Logs
       </div>
-
       <q-card-section>
-        <q-list class="row" v-if="patientInfoDisabled">
-          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <q-item-section>
-              <q-input
-                disable
-                filled
-                v-model="user_details.id"
-                label="Patient ID"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-item-section>
-          </q-item>
-          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <q-item-section>
-              <q-input
-                disable
-                filled
-                v-model="user_details.first_name"
-                label="First Name"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-item-section>
-          </q-item>
-          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <q-item-section>
-              <q-input
-                disable
-                filled
-                v-model="user_details.middle_name"
-                label="Middle Name"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-item-section>
-          </q-item>
-          <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <q-item-section>
-              <q-input
-                disable
-                filled
-                v-model="user_details.last_name"
-                label="Last Name"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
-              />
-            </q-item-section>
-          </q-item>
-        </q-list>
-
         <q-list class="row">
-
           <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <q-item-section>
               <q-input
                 filled
                 :disable="patientVisitInfoDisabled"
                 v-model="user_details.attending_doctor"
-                label="Attending Doctor *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
+                label="Attending Doctor"
               />
             </q-item-section>
           </q-item>
@@ -79,9 +24,7 @@
                 filled
                 :disable="patientVisitInfoDisabled"
                 v-model="user_details.patient_bp"
-                label="Patient BP *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
+                label="Patient BP"
               />
             </q-item-section>
           </q-item>
@@ -91,9 +34,7 @@
                 filled
                 :disable="patientVisitInfoDisabled"
                 v-model="user_details.patient_height"
-                label="Height *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
+                label="Height"
               />
             </q-item-section>
           </q-item>
@@ -103,9 +44,7 @@
                 filled
                 :disable="patientVisitInfoDisabled"
                 v-model="user_details.patient_weight"
-                label="Weight *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
+                label="Weight"
               />
             </q-item-section>
           </q-item>
@@ -115,9 +54,7 @@
                 filled
                 :disable="patientVisitInfoDisabled"
                 v-model="user_details.remarks"
-                label="Remarks *"
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']"
+                label="Remarks"
               />
             </q-item-section>
           </q-item>

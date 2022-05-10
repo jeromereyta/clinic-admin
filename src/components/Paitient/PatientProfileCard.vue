@@ -22,9 +22,7 @@
           <q-input
             filled
             v-model="patient.middle_name"
-            label="Middle Name *"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            label="Middle Name"
           />
         </q-item-section>
       </q-item>
@@ -44,10 +42,7 @@
           <q-input
             filled
             v-model="patient.email"
-            label="Your email *"
-            hint="Example: johndoe@gmail.com"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            label="Your email"
           />
         </q-item-section>
       </q-item>
@@ -62,7 +57,7 @@
       </q-item>
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input                filled v-model="patient.birth_date" mask="date" :rules="['date']"    label="Birthdate *">
+          <q-input filled v-model="patient.birth_date" mask="date" :rules="['date']"    label="Birthdate *">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -81,8 +76,6 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.civil_status"
             label="Civil Status *"
             lazy-rules
@@ -94,8 +87,6 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.phone_number"
             label="Phone Number *"
             lazy-rules
@@ -126,13 +117,9 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.street_address"
-            label="Street Address *"
+            label="Street Address"
             hint="#14 unit 421 Tiny Street"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
           />
         </q-item-section>
       </q-item>
@@ -140,12 +127,8 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.barangay"
-            label="Barangay *"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            label="Barangay"
           />
         </q-item-section>
       </q-item>
@@ -153,12 +136,8 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.city"
-            label="City *"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            label="City"
           />
         </q-item-section>
       </q-item>
@@ -166,12 +145,8 @@
         <q-item-section>
           <q-input
             filled
-
-
             v-model="patient.province"
-            label="Province *"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            label="Province"
           />
         </q-item-section>
       </q-item>
