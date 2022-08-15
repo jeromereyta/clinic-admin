@@ -15,13 +15,11 @@
         :filter="filter"
       >
         <template v-slot:top-right>
-          <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <q-input filled borderless dense debounce="300" v-model="filter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search"/>
             </template>
           </q-input>
-
-          <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
@@ -46,7 +44,7 @@
             <q-input
               filled
               v-model="procedure.description"
-              label="Description *"
+              label="Laboratory Code *"
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please type something']"
             />
@@ -146,7 +144,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'description', label: 'Description', field: 'description', align: 'left'},
+        {name: 'description', label: 'Laboratory Code', field: 'description', align: 'left'},
         {name: 'category', label: 'Category', field: 'category_name', align: 'left'},
         {name: 'Action', label: '', field: 'Action', sortable: false, align: 'center'}
       ]

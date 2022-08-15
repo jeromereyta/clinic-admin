@@ -234,11 +234,30 @@
             Upload File
           </div>
           <div class="text-caption text-grey">
-            Schedule for checkup, laboratory and etc.
+            Upload file related to a procedure, health check list and etc.
           </div>
           <q-select
+            label="Select Procedures"
             filled
-            v-model="fileType"
+            v-model="fileForm.selectedProcedure"
+            use-input
+            clearable
+            input-debounce="0"
+            :options="proceduresOptionsComputed"
+            option-label="name"
+            style="width: 400px; padding-bottom: 32px"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No results
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <q-select
+            filled
+            v-model="fileForm.fileType"
             use-input
             hide-selected
             fill-input
@@ -250,7 +269,7 @@
             style="margin-top:30px; width: 400px; padding-bottom: 32px"
           >
             <template v-slot:append>
-              <q-icon  v-if="fileType!==null" v name="cancel" @click.stop="fileType = null" class="cursor-pointer" />
+              <q-icon  v-if="fileForm.fileType!==null" v name="cancel" @click.stop="fileForm.fileType = null" class="cursor-pointer" />
             </template>
             <template v-slot:no-option>
               <q-item>
@@ -260,7 +279,7 @@
               </q-item>
             </template>
           </q-select>
-          <q-file v-if="fileType !== null" filled bottom-slots v-model="file" label="Upload File" counter max-files="12" style="margin-top:30px;">
+          <q-file v-if="fileForm.fileType !== null" filled bottom-slots v-model="file" label="Upload File" counter max-files="12" style="margin-top:30px;">
             <template v-slot:append>
               <q-icon v-if="file !== null" name="close" @click.stop="file = null" class="cursor-pointer" />
             </template>
@@ -269,8 +288,8 @@
               Field hint
             </template>
           </q-file>
-          <q-input v-if="file!==null" dense autogrow outlined v-model="description" class="full-width" style="margin-top:30px;"
-                   label="Description *"/>
+          <q-input v-if="file!==null" dense autogrow outlined v-model="fileForm.description" class="full-width" style="margin-top:30px;"
+                   label="Description"/>
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
@@ -383,7 +402,6 @@
               v-model="description"
               label="Note"
               lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please type something']"
             />
           </q-card-section>
           <q-card-actions>
@@ -399,7 +417,7 @@
       <q-spinner-grid size="200px" color="pink" />
     </q-inner-loading>
     <VueHtml2pdf
-      :show-layout="false"
+      :show-layout="true"
       :float-layout="true"
       :enable-download="true"
       :preview-modal="false"
@@ -413,134 +431,7 @@
       ref="html2Pdf"
     >
       <section slot="pdf-content">
-        <q-card class="rounded-borders">
-          <div class="row">
-            <div class="col-12">
-              <q-item-label header class="text-h4" style="color:deeppink;">
-                Clinica Medica
-              </q-item-label>
-              <q-item-label header class="text-h6">Services summary</q-item-label>
-              <div v-for="(item, index) in procedures" v-bind:key="item.id">
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1">{{item.name}}</q-item-label>
-                    <q-item-label caption>{{item.description}}</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                      <span>&#8369;
-                        {{item.price}}
-                      </span>
-                  </q-item-section>
-                </q-item>
-                <q-separator spaced inset></q-separator>
-              </div>
-            </div>
-          </div>
-          <q-separator />
-          <q-card-section horizontal>
-            <q-card-section class="col-7 q-pt-xs">
-              <q-item-label header class="text-h6">Payment Summary</q-item-label>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 210px;">Transaction Code#</div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>
-                    {{order.transaction_code}}
-                  </q-item>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 220px;">Patient Name: </div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>
-                    {{patient.patient_name}}
-                  </q-item>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Payment Method: </div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>
-                    {{order.payment_method}}
-                  </q-item>
-                </div>
-              </div>
-              <div class="row">
-                 <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Remarks: </div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>
-                    {{order.remarks}}
-                  </q-item>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Total Amount: </div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>
-                    <span>&#8369;</span> {{procedureAmount}}
-                  </q-item>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Payment Date: </div>
-                  </q-item>
-                </div>
-                <div class="col-6">
-                  <q-item>{{dateToday}}</q-item>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <q-item>
-                    <div class="text-subtitle1" style="max-width: 200px;">Status: </div>
-                  </q-item>
-                </div>
-                <div class="col-6" v-if="inQueue">
-                  <q-item>
-                    <q-chip outline color="green" text-color="white" icon="done">
-                      Paid
-                    </q-chip>
-                  </q-item>
-                </div>
-                <div class="col-8" v-else-if="!inQueue && isPast">
-                  <q-item>
-                    <q-chip outline color="red" text-color="blue" icon="unpublished">
-                      Expired and Transaction wasn't placed.
-                    </q-chip>
-                  </q-item>
-                </div>
-                <div class="col-6" v-else>
-                  <q-item>
-                    <q-chip outline color="yellow" text-color="white" icon="unpublished">
-                      Not Paid
-                    </q-chip>
-                  </q-item>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
+        <index-page></index-page>
         <!-- PDF Content Here -->
       </section>
 
@@ -551,11 +442,13 @@
 <script>
 import { date } from 'quasar'
 import VueHtml2pdf from 'vue-html2pdf'
+import IndexPage from '../../components/tables/IndexPage'
 
 export default {
   name: "PatientVisit",
   components: {
     VueHtml2pdf,
+    IndexPage,
     TableFileUploads: () => import('../Patients/components/TableFileUploads'),
     TablePatientProcedures: () => import('./components/TablePatientProcedures'),
   },
@@ -580,6 +473,11 @@ export default {
       packageModal : false,
       patient : {
         files : [],
+      },
+      fileForm: {
+        fileType: null,
+        selectedProcedure: null,
+        description: null,
       },
       packages : [],
       selectedPackage :null,
@@ -870,8 +768,9 @@ export default {
 
       fd.append('file', this.file);
       fd.append('patient_visit_id', this.$route.params.patient_visit_id);
-      fd.append('file_type_id', this.fileType.id);
-      fd.append('description', this.description);
+      fd.append('file_type_id', this.fileForm.fileType.id);
+      fd.append('procedure_id', this.fileForm.selectedProcedure.id);
+      fd.append('description', this.fileForm.description);
 
       this.isLoading = true;
 
@@ -885,9 +784,10 @@ export default {
             this.isLoading = false;
             this.processError(response.data)
           } else {
-            this.description = null;
+            this.fileForm.description = null;
             this.file = null;
-            this.fileType = null;
+            this.fileForm.selectedProcedure = null;
+            this.fileForm.fileType = null;
             this.getPatientVisit()
           }
         })

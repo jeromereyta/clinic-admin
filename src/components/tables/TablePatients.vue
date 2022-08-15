@@ -3,7 +3,9 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         Patient List
-        <q-btn label="Admit Patient" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="newPatient()"/>
+        <q-btn label="Admit Patient"  style="margin-left:20px" class="float-right text-capitalize text-indigo-8 shadow-3" icon="person_add" @click="newPatient()"/>
+
+        <q-btn label="Download Patients into Excel" class="float-right text-capitalize text-indigo-8 shadow-3" icon="file_download" @click="downloadExcel()"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
@@ -15,12 +17,11 @@
         :filter="filter"
       >
         <template v-slot:top-right>
-          <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <q-input filled borderless dense debounce="300" v-model="filter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search"/>
             </template>
           </q-input>
-          <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
@@ -277,6 +278,9 @@ export default {
     }
   },
   methods: {
+    downloadExcel () {
+      window.location.href = process.env.API_URL + 'api/' + "patients/export"
+    },
     newPatient () {
       this.$router.push({ name: 'admit-patient' })
     },

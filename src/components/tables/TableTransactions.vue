@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="text-h6 text-grey-8">
         Transactions
-        <q-btn label="Create File Type" class="float-right text-capitalize text-indigo-8 shadow-3" icon="add" @click="openDialog('Create')"/>
+        <q-btn label="Download Excel" class="float-right text-capitalize text-indigo-8 shadow-3" icon="file_download" @click="exportXlsx"/>
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
@@ -14,14 +14,15 @@
         row-key="id"
         :filter="filter"
       >
+        <template v-slot:top-left>
+        </template>
         <template v-slot:top-right>
-          <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <q-btn label="Filter By Date" style="margin-right: 750px" class="float-left text-capitalize text-indigo-8 shadow-3" icon="date_range" @click="dateFilter=true"/>
+          <q-input filled borderless dense debounce="300" v-model="filter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search"/>
             </template>
           </q-input>
-
-          <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
         </template>
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
@@ -36,6 +37,49 @@
           </q-td>
         </template>
       </q-table>
+      <q-dialog v-model="dateFilter">
+        <q-card style="width: 500px; max-width: 100vw; height: 300px; max-height: 100vw;">
+          <q-card-section>
+            <q-input  filled v-model="fromDate" mask="date" :rules="['date']" label="From Date" borderless dense debounce="300">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="fromDate" >
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input filled v-model="toDate" mask="date" :rules="['date']" label="To Date" borderless dense debounce="300">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="toDate" >
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-actions>
+            <q-btn
+              @click="generateTransactionsByDate"
+              class="float-right text-capitalize text-indigo-8 shadow-3"
+              icon="date_range"
+              v-show="fromDate && toDate"
+            >
+              Generate
+            </q-btn>
+            <q-btn @click="getAll" class="float-right text-capitalize text-indigo-8 shadow-3" icon="search_off">Clear Filter</q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-card-section>
     <q-inner-loading :showing="isLoading">
       <q-spinner-grid size="200px" color="pink" />
@@ -48,6 +92,9 @@ export default {
   name: "TableTransactions.vue",
   data() {
     return {
+      dateFilter: false,
+      fromDate: null,
+      toDate: null,
       data: [],
       transactions: {},
       createLoading: false,
@@ -83,9 +130,36 @@ export default {
     openDialog (transaction) {
 
     },
-    getTransactions () {
+    exportXlsx () {
+      let dateRange = {
+        fromDate : this.fromDate,
+        toDate: this.toDate,
+      }
+
+      if (this.fromDate && this.toDate) {
+        window.location.href = process.env.API_URL + "api/" + "transactions/export?from=" + this.fromDate + "&to=" + this.toDate
+      } else {
+        window.location.href = process.env.API_URL + 'api/' + "transactions/export"
+      }
+    },
+    getAll () {
+      this.getTransactions()
+      this.fromDate = null;
+      this.toDate = null;
+      this.dateFilter = false
+    },
+    generateTransactionsByDate() {
+      let dateRange = {
+        fromDate : this.fromDate,
+        toDate: this.toDate,
+      }
+
+      this.getTransactions(dateRange)
+      this.dateFilter = false
+    },
+    getTransactions (dateRange) {
       this.isLoading = true;
-      this.$store.dispatch("transactions/list").then(
+      this.$store.dispatch("transactions/list", dateRange).then(
         response => {
           this.isLoading = false;
 
