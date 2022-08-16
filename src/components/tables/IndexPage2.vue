@@ -1,92 +1,81 @@
 <template>
-  <q-page-container class="messiah-container">
-    <q-page class="column items-center">
-      <div class="header row">
-        <img src="./messiah.png" alt="messiah" class="messiah-logo" />
-        <div class="col-8">
-          <h5 class="title">Messiah Clinica Medica Medical Clinic</h5>
-          <p class="sub-title">
+  <q-page-container className="messiah-container">
+    <q-page className="column items-center">
+      <div className="header row">
+        <img src="./messiah.png" alt="messiah" className="messiah-logo" />
+        <div className="col-8">
+          <h5 className="title">Messiah Clinica Medica Medical Clinic</h5>
+          <p className="sub-title">
             2<sup>nd</sup> Floor kimstom Plaza, P.Victor, Cor. P. Burgos
             Guadalupe Nuevo Makati
           </p>
         </div>
 
-        <div class="col">
-          <p class="email">e-mail: messiahcmclinic@gmail.com</p>
+        <div className="col">
+          <p className="email">e-mail: messiahcmclinic@gmail.com</p>
         </div>
       </div>
 
-      <div class="client-information row">
-        <h5 class="title col-7">Patient Information</h5>
-        <h5 class="title right col-5">Patient Transaction Statement</h5>
+      <div className="client-information row">
+        <h5 className="title col-7">Client/Patient Information</h5>
+        <h5 className="title right col-5">CLIENT TRANSACTION STATEMENT</h5>
 
-        <div class="border">
-          <div class="details row">
-            <div class="col-7">
-              <p class="text">Patient ID#: {{patientData.patient_code}}</p>
-              <p class="text">Patient Name: {{patientData.patient_name}}</p>
-              <p class="text">Birth date: {{patientData.patient_birth_date}}</p>
-              <p class="text">Transaction ID No: {{patientData.total_summary.transaction_code}}</p>
+        <div className="border">
+          <div className="details row">
+            <div className="col-7">
+              <p className="text">Patient ID#: PX000001</p>
+              <p className="text">Patient Name: PELONIA BIENVENIDO., JR.</p>
+              <p className="text">Birth date: Dec. 19, 1978</p>
+              <p className="text">Transaction ID No: PX0001-060722-2</p>
             </div>
-            <div class="col-5">
-              <p class="text date">Date: {{patientData.total_summary.created_at}}</p>
+            <div className="col-5">
+              <p className="text date">Date: June 7,2022</p>
 
-              <p class="text age">Age/Gender: {{patientData.patient_age}}/{{patientData.patient_gender}}</p>
+              <p className="text age">Age/Gender: 43/M</p>
 
-              <p class="text">Payment Mode: {{patientData.total_summary.payment_method}}</p>
+              <p className="text">Payment Mode: Cash</p>
+
+              <p className="text">Queuing #: 04</p>
             </div>
           </div>
         </div>
-        <h5 class="title col-7">Billing Summary</h5>
+        <h5 className="title col-7">Billing Summary</h5>
         <q-table
           hide-bottom
           dense
-          :data="procedures"
+          :rows="rows"
           :columns="columns"
           row-key="number"
         />
 
-        <div class="border-black">
-          <div class="details row">
-            <div class="col-6"></div>
-            <div class="col-4">
-              <p class="text">Total balance due #: </p>
-            </div>
-            <div class="col-4">
-              <p class="text date"> <span>&#8369;
-                        {{patientData.total_summary.total_amount}}
-                      </span></p>
-            </div>
-          </div>
-        </div>
-        <p class="acknowledgement">
+        <p className="acknowledgement">
           I/We hereby certify the correctness and the authenticity of entry of
           this document and that necessary Acknowledgement <br />
           Receipt was issues to the patient client for information prior to the
           conduct transaction
         </p>
 
-        <div class="signature row">
-          <p class="prepared col-6">
-            prepared by: <span> Duty Reception Staff</span>
+        <div className="signature row">
+          <p className="prepaired col-6">
+            Prepaired by: <span> Duty Reception Staff</span>
           </p>
-          <p class="client col-6">
-            PX/Client Signature: <span> {{patientData.patient_name}}</span>
+          <p className="client col-6">
+            PX/Client Signature: <span> Biendvenido P. Pelonia Jr</span>
           </p>
         </div>
 
-        <div class="logos row">
-          <div class="col-3 logo-container">
+        <div className="logos row">
+          <div className="col-3 logo-container">
             <img src="./DOH_Logo.png" alt="doh logo" />
             <p>Lic. #: 13-0433-22-Cl-2</p>
           </div>
-          <div class="col-5 logo-container">
+          <div className="col-5 logo-container">
             <img src="./FDA-Logo.png" alt="fda logo" />
-            <p class="fda">CDRRHR-RRD No. NCR-M <sub>0922218395825</sub></p>
+            <p className="fda">CDRRHR-RRD No. NCR-M <sub>0922218395825</sub></p>
           </div>
-          <div class="col-4 logo-container">
-            <img src="./phone.png" alt="phone" class="phone" />
-            <p class="phone">Smart 0999-1638768 /Globe 09158082664</p>
+          <div className="col-4 logo-container">
+            <img src="./phone.png" alt="phone" className="phone" />
+            <p className="phone">Smart 0999-1638768 /Globe 09158082664</p>
           </div>
         </div>
       </div>
@@ -94,100 +83,98 @@
   </q-page-container>
 </template>
 
-<script>
-export default {
-  name: 'IndexPage',
-  props: [
-    'transactions',
-    'patientData',
-  ],
-  computed : {
-    procedures: function () {
-      let counter = 1;
-      return this.patientData.procedures.map(procedure => {
-        procedure.index = counter;
-        counter++;
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-        return procedure;
-      });
-    },
+const columns = [
+  {
+    number: 'number',
+    label: 'No.',
+    align: 'center',
+    field: 'number',
   },
-  data () {
+  {
+    desc: 'desc',
+    label: 'Description',
+    align: 'center',
+    field: 'desc',
+  },
+  { amount: 'amount', label: 'Amount', field: 'amount', align: 'center' },
+  {
+    number1: 'number1',
+    label: 'No.',
+    align: 'center',
+    field: 'number1',
+  },
+  {
+    desc1: 'desc1',
+    label: 'Description',
+    align: 'center',
+    field: 'desc1',
+  },
+  { amount1: 'amount1', label: 'Amount', field: 'amount1', align: 'center' },
+];
+
+const rows = [
+  {
+    number: '1',
+    desc: 'CBC',
+    amount: '350.00',
+    number1: '6',
+    desc1: 'Pelvic Ultrasound',
+    amount1: '350.00',
+  },
+  {
+    number: '2',
+    desc: 'Urinalysis',
+    amount: '85.00',
+    number1: '7',
+    desc1: 'Hepa-B testing',
+    amount1: '1,100.00',
+  },
+  {
+    number: '3',
+    desc: 'Abdominal Ultrasound',
+    amount: '1,200.00',
+    number1: '8',
+    desc1: '',
+    amount1: '',
+  },
+  {
+    number: '4',
+    desc: 'Fecalysis',
+    amount: '100.00',
+    number1: '9',
+    desc1: '',
+    amount1: '',
+  },
+  {
+    number: '5',
+    desc: 'Blood typing',
+    amount: '300.00',
+    number1: '10',
+    desc1: '',
+    amount1: '',
+  },
+];
+export default defineComponent({
+  name: 'IndexPage',
+  components: {},
+
+  setup() {
     return {
-      columns : [
-        {
-          number: 'number',
-          label: 'No.',
-          align: 'center',
-          field: 'index',
-        },
-        {
-          desc: 'desc',
-          label: 'Description',
-          align: 'center',
-          field: 'name',
-        },
-        {
-          number1: 'number1',
-          label: 'Queue No.',
-          align: 'center',
-          field: 'queue_number',
-        },
-        { amount: 'amount', label: 'Amount', field: 'price', align: 'center' },
-      ],
-      rows : [
-        {
-          number: '1',
-          desc: 'CBC',
-          amount: '350.00',
-          number1: '6',
-          desc1: 'Pelvic Ultrasound',
-          amount1: '350.00',
-        },
-        {
-          number: '2',
-          desc: 'Urinalysis',
-          amount: '85.00',
-          number1: '7',
-          desc1: 'Hepa-B testing',
-          amount1: '1,100.00',
-        },
-        {
-          number: '3',
-          desc: 'Abdominal Ultrasound',
-          amount: '1,200.00',
-          number1: '8',
-          desc1: '',
-          amount1: '',
-        },
-        {
-          number: '4',
-          desc: 'Fecalysis',
-          amount: '100.00',
-          number1: '9',
-          desc1: '',
-          amount1: '',
-        },
-        {
-          number: '5',
-          desc: 'Blood typing',
-          amount: '300.00',
-          number1: '10',
-          desc1: '',
-          amount1: '',
-        },
-      ],
-    }
+      columns,
+      rows,
+    };
   },
-};
+});
 </script>
 
 <style lang="scss">
 .messiah-container {
-
-  padding-top: 0px;
-  margin-left: -250px;
-  max-width: 900px;
+  padding-top: 30px;
+  max-width: 800px;
+  margin: 0 auto;
   position: relative;
   .header {
     min-width: 735px;
@@ -196,7 +183,6 @@ export default {
       position: absolute;
       height: 50px;
       width: 50px;
-      margin-left: -49px;
       object-fit: contain;
       top: 0;
       left: 0;
@@ -240,11 +226,6 @@ export default {
       width: 100%;
       padding: 1%;
     }
-    .border-black {
-      border: 2px solid black;
-      width: 100%;
-      padding: 2%;
-    }
     .details {
       width: 100%;
       position: relative;
@@ -286,13 +267,11 @@ export default {
       tbody {
         background: transparent !important;
         background-color: transparent !important;
-
         tr {
           height: auto;
           &:hover {
             background: transparent !important;
             background-color: transparent !important;
-
             td {
               &::before {
                 background: transparent !important;
@@ -324,7 +303,7 @@ export default {
     .signature {
       width: 100%;
       margin-top: 7px;
-      .prepared {
+      .prepaired {
         font-size: 0.92rem;
         display: flex;
         font-style: italic;

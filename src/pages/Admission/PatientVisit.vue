@@ -1,5 +1,25 @@
 <template>
   <q-page class="q-pa-sm" >
+    <VueHtml2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="false"
+      :paginate-elements-by-height="1400"
+      :filename="patient.patient_name + '- receipt -' + Date.now() "
+      :pdf-quality="3"
+      :manual-pagination="false"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="a6"
+      ref="html2Pdf"
+    >
+      <section slot="pdf-content">
+        <index-page :patientData="patient"></index-page>
+        <!-- PDF Content Here -->
+      </section>
+
+    </VueHtml2pdf>
     <div class="row q-col-gutter-sm">
       <div class="col-lg-12 col-md-7 col-sm-12 col-xs-12">
         <q-stepper
@@ -416,26 +436,6 @@
     <q-inner-loading :showing="isLoading">
       <q-spinner-grid size="200px" color="pink" />
     </q-inner-loading>
-    <VueHtml2pdf
-      :show-layout="true"
-      :float-layout="true"
-      :enable-download="true"
-      :preview-modal="false"
-      :paginate-elements-by-height="1400"
-      :filename="patient.patient_name + '- receipt -' + Date.now() "
-      :pdf-quality="2"
-      :manual-pagination="false"
-      pdf-format="a4"
-      pdf-orientation="landscape"
-      pdf-content-width="900px"
-      ref="html2Pdf"
-    >
-      <section slot="pdf-content">
-        <index-page></index-page>
-        <!-- PDF Content Here -->
-      </section>
-
-    </VueHtml2pdf>
   </q-page>
 </template>
 
