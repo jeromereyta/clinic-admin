@@ -29,7 +29,7 @@
       </q-table>
     </q-card-section>
     <q-dialog v-model="packageDataForm">
-      <q-card style="width: 500px; max-width: 100vw; height: 500px; max-height: 100vw;">
+      <q-card style="width: 800px; max-width: 100vw; height: 700px; max-height: 100vw;">
         <q-card-section>
           <h5> {{packageMethod}} Package Details</h5>
           <q-form class="q-gutter-md">
@@ -44,7 +44,7 @@
               label="Description *"
             />
           </q-form>
-          <q-card-section class="q-pa-none">
+          <q-card-section class="q-pa-none" style="margin-top: 15px">
             <q-table
               :data="selectedPackageProcedures"
               :columns="procedureColumns"
@@ -62,8 +62,8 @@
           </q-card-section>
 
             <div>
-              <q-btn label="Submit" color="primary" @click="submitPackage()"/>
-              <q-btn label="Cancel" color="primary" flat class="q-ml-sm"  @click="closePackageData()"/>
+              <q-btn label="Submit" color="primary" @click="submitPackage()" class="mr-10 mt-10" style="margin-top: 20px"/>
+              <q-btn label="Cancel" color="primary" flat class="q-ml-sm"  @click="closePackageData()" style="margin-top: 20px"/>
             </div>
 
         </q-card-section>

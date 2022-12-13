@@ -49,7 +49,6 @@
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
           <q-select
-
             v-model="patient.gender"
             :options="genders"
             label="Gender *" />
@@ -74,13 +73,19 @@
       </q-item>
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <q-item-section>
-          <q-input
-            filled
+          <q-select
             v-model="patient.civil_status"
-            label="Civil Status *"
+            :options="civilStatuses"
+            label="Civil Status*"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
           />
+<!--          <q-input-->
+<!--            filled-->
+<!--            v-model="patient.civil_status"-->
+<!--            label="Civil Status *"-->
+<!--            lazy-rules-->
+<!--            :rules="[ val => val && val.length > 0 || 'Please type something']"-->
+<!--          />-->
         </q-item-section>
       </q-item>
       <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -174,6 +179,7 @@ export default {
   data() {
     return {
       genders: ['Male', 'Female', 'Others'],
+      civilStatuses: ['Single', 'Married', 'Divorced', 'Separated', 'Widowed' ]
     }
   }
 }
