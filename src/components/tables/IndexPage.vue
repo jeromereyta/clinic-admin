@@ -184,18 +184,17 @@ export default {
 
 <style lang="scss">
 .messiah-container {
-
-  padding-top: 0px;
   margin-left: -250px;
-  max-width: 900px;
+  max-width: 700px;
   position: relative;
   .header {
+    margin-top: -55px!important;
     min-width: 735px;
-    margin: 0 0 0 auto;
     .messiah-logo {
+      margin-top: -55px!important;
       position: absolute;
-      height: 50px;
-      width: 50px;
+      height: 40px;
+      width: 40px;
       margin-left: -49px;
       object-fit: contain;
       top: 0;
@@ -203,23 +202,23 @@ export default {
     }
     h5.title {
       margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 400;
       color: #ff0083;
     }
     p {
       &.sub-title {
         margin: 0;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-style: italic;
         line-height: 1;
         white-space: nowrap;
       }
       &.email {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-style: italic;
         line-height: 1;
-        margin: 35px 0 0 0;
+        margin: 28px 0 0 0;
         text-align: right;
       }
     }
@@ -228,32 +227,32 @@ export default {
     min-width: 735px;
     h5.title {
       margin: 0.5% 0 0 0;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 400;
       text-transform: capitalize;
       &.right {
         text-align: right;
       }
     }
     .border {
-      border: 2px solid #5f8cc4;
+      border: 1px solid #5f8cc4;
       width: 100%;
       padding: 1%;
     }
     .border-black {
-      border: 2px solid black;
+      border: 1px solid black;
       width: 100%;
-      padding: 2%;
+      padding: 1%;
     }
     .details {
       width: 100%;
       position: relative;
       .text {
         margin: 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-        padding-left: 20px;
-        line-height: 1.2;
+        font-size: 0.75rem;
+        font-weight: 400;
+        padding-left: 10px;
+        line-height: 1.0;
         &.date {
           position: absolute;
           top: 0;
@@ -279,29 +278,25 @@ export default {
           border-bottom: 1px solid #000 !important;
           border-right: 1px solid #000 !important;
           border-top: 1px solid #000 !important;
-          font-size: 1rem;
+          font-size: 0.75rem;
           padding: 0;
         }
       }
       tbody {
         background: transparent !important;
-        background-color: transparent !important;
 
         tr {
           height: auto;
           &:hover {
             background: transparent !important;
-            background-color: transparent !important;
 
             td {
               &::before {
                 background: transparent !important;
-                background-color: transparent !important;
               }
               border-bottom: 1px solid #000 !important;
               border-right: 1px solid #000 !important;
               background: transparent !important;
-              background-color: transparent !important;
               padding: 0;
             }
           }
@@ -309,47 +304,46 @@ export default {
             border-bottom: 1px solid #000 !important;
             border-right: 1px solid #000 !important;
             background: transparent !important;
-            background-color: transparent !important;
-            font-size: 1rem;
+            font-size: 0.75rem;
             padding: 0;
           }
         }
       }
     }
     .acknowledgement {
-      font-size: 0.92rem;
+      font-size: 0.65rem;
       font-style: italic;
       margin: 10px 0 0 0;
     }
     .signature {
       width: 100%;
-      margin-top: 7px;
+      margin-top: 4px;
       .prepared {
-        font-size: 0.92rem;
+        font-size: 0.65rem;
         display: flex;
         font-style: italic;
         span {
           display: block;
           border-top: 1px solid #000;
-          padding: 0 10%;
-          margin-top: 4%;
-          margin-left: 5%;
+          padding: 0 4%;
+          margin-top: 2%;
+          margin-left: 3%;
           font-style: normal;
         }
       }
       .client {
-        font-size: 0.92rem;
+        font-size: 0.75rem;
         display: flex;
         font-style: italic;
         justify-content: flex-start;
         align-items: flex-start;
         span {
           display: block;
-          padding: 0 10%;
+          padding: 0 7%;
           margin-left: 5%;
           font-style: normal;
           border-bottom: 1px solid #000;
-          font-weight: 600;
+          font-weight: 400;
         }
       }
     }

@@ -11,7 +11,8 @@
       :manual-pagination="false"
       pdf-format="a4"
       pdf-orientation="portrait"
-      pdf-content-width="a6"
+      pdf-content-width="a4"
+      pdf-content-height="a5"
       ref="html2Pdf"
     >
       <section slot="pdf-content">
