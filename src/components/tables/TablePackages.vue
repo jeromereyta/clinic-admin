@@ -85,9 +85,11 @@
             filled
             v-model="newProcedure.selectedProcedure"
             use-input
+            fill-input
             clearable
+            @filter="filterProcedures"
             input-debounce="0"
-            :options="proceduresOptionsComputed"
+            :options="procedureSelections"
             option-label="name"
             style="width: 400px; padding-bottom: 32px"
           >
@@ -167,6 +169,7 @@ export default {
 
       },
       packageData: {},
+      procedureSelections: [],
       procedureModal: false,
       selectedPackageProcedures: [],
       packageMethod: null,
@@ -237,6 +240,14 @@ export default {
     }
   },
   methods: {
+    filterProcedures (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        if (this.proceduresOptionsComputed.length > 0) {
+          this.procedureSelections = this.proceduresOptionsComputed.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+        }
+      })
+    },
     closePackageData () {
       this.packageDataForm = false;
       this.selectedPackageProcedures = [];

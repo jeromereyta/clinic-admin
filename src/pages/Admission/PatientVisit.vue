@@ -346,9 +346,12 @@
           <q-select
             label="Select Package"
             filled
+            use-input
+            fill-input
+            @filter="filterPackages"
             v-model="selectedPackage"
             clearable
-            :options="packagesOptionsComputed"
+            :options="packageSelections"
             option-label="name"
             style="width: 400px; padding-bottom: 32px"
           >
@@ -396,12 +399,18 @@
                 filled
                 v-model="selectedProcedure"
                 use-input
+                fill-input
                 clearable
+                @filter="filterProcedures"
                 input-debounce="0"
-                :options="proceduresOptionsComputed"
+                :options="procedureSelections"
                 option-label="name"
                 style="width: 400px; padding-bottom: 32px"
               >
+                <template v-slot:append>
+                  <q-icon  v-if="selectedProcedure!==null" v name="cancel" @click.stop="selectedProcedure = null" class="cursor-pointer" />
+                  <q-icon name="person_search " />
+                </template>
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -481,6 +490,8 @@ export default {
         description: null,
       },
       packages : [],
+      procedureSelections: [],
+      packageSelections: [],
       selectedPackage :null,
       packageTotalPrice: 0,
       selectedPackageProcedures: [],
@@ -589,6 +600,27 @@ export default {
     }
   },
   methods: {
+    filterProcedures (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        if (this.proceduresOptionsComputed.length > 0) {
+          this.procedureSelections = this.proceduresOptionsComputed.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+        }
+      })
+    },
+    filterPackages (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        if (this.packagesOptionsComputed.length > 0) {
+          this.packageSelections = this.packagesOptionsComputed.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+        }
+      })
+    },
+    cancel () {
+      this.user_details = {};
+      this.step = 1;
+      this.patientView = false;
+    },
     openPackageModel(){
       this.packageModal = true;
     },
