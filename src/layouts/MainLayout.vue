@@ -46,7 +46,9 @@
             <q-item-label>Transactions</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Queue" active-class="q-item-no-link-highlighting">
+        <q-item to="/Queue" active-class="q-item-no-link-highlighting"
+          v-if="isAdmin || isReceptionist"
+        >
           <q-item-section avatar>
             <q-icon name="queue_play_next"/>
           </q-item-section>
@@ -54,7 +56,7 @@
             <q-item-label>Procedure Queueing</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Patients" active-class="q-item-no-link-highlighting">
+        <q-item to="/Patients" active-class="q-item-no-link-highlighting" v-if="!isCashier">
           <q-item-section avatar>
             <q-icon name="people_alt"/>
           </q-item-section>
@@ -72,7 +74,7 @@
 <!--        </q-item>-->
         <q-expansion-item
           icon="pages"
-          label="Account"
+          label="Profile Action"
         >
           <q-list class="q-pl-lg">
             <q-item to="/Lock" active-class="q-item-no-link-highlighting">
@@ -83,14 +85,14 @@
                 <q-item-label>Lock Screen</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item to="/UsersAdmin" active-class="q-item-no-link-highlighting">
-              <q-item-section avatar>
-                <q-icon name="admin_panel_settings"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Change User Type</q-item-label>
-              </q-item-section>
-            </q-item>
+<!--            <q-item to="/UsersAdmin" active-class="q-item-no-link-highlighting">-->
+<!--              <q-item-section avatar>-->
+<!--                <q-icon name="admin_panel_settings"/>-->
+<!--              </q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label>Change User Type</q-item-label>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
             <q-item to="/Login-1" active-class="q-item-no-link-highlighting">
               <q-item-section avatar>
                 <q-icon name="admin_panel_settings"/>
@@ -118,6 +120,7 @@
           </q-list>
         </q-expansion-item>
         <q-expansion-item
+          v-if="isAdmin === true"
           icon="settings"
           label="Settings"
         >
@@ -343,8 +346,29 @@
 
         data() {
             return {
-                leftDrawerOpen: false,
+              leftDrawerOpen: false,
+              isAdmin: false,
+              isCashier: false,
+              isReceptionist: false,
             }
+        },
+
+        created() {
+          const user = JSON.parse(localStorage.getItem('user'))?.user ?? null;
+
+          if (user.fullName.includes('Cashier')) {
+            this.isCashier = true
+          }
+
+          if (user.fullName.includes('Admin')) {
+            this.isAdmin = true
+          }
+
+          if (user.fullName.includes('Receptionist')) {
+            this.isReceptionist = true
+          }
+
+          console.log(this.isCashier)
         }
     }
 </script>
